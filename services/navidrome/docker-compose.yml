@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    restart: unless-stopped
+    ports:
+      - "4533:4533"
+    environment:
+      # Basic configuration
+      ND_LOGLEVEL: info
+      ND_SESSIONTIMEOUT: 24h
+      ND_BASEURL: ""
+      
+      # Scanning configuration
+      ND_SCANSCHEDULE: "@every 1h"
+      ND_AUTOIMPORTPLAYLISTS: "true"
+      
+      # Transcoding configuration
+      ND_ENABLETRANSCODINGCONFIG: "true"
+      ND_TRANSCODINGCACHESIZE: 512MB
+      
+      # Optional: Last.fm integration (set your own keys)
+      # ND_LASTFM_ENABLED: "true"
+      # ND_LASTFM_APIKEY: "your-api-key"
+      # ND_LASTFM_SECRET: "your-secret"
+      
+      # Optional: Spotify integration (set your own keys)
+      # ND_SPOTIFY_ID: "your-spotify-id"
+      # ND_SPOTIFY_SECRET: "your-spotify-secret"
+    
+    volumes:
+      # Music library (read-only for safety)
+      # IMPORTANT: Change this path to your actual music directory
+      - /home/tyler/music:/music:ro
+      
+      # Persistent data (database, cache, etc.)
+      - ./data:/data
+    
+    user: "1000:1000"
+    
+    networks:
+      - navidrome-net
+
+networks:
+  navidrome-net:
+    driver: bridge
