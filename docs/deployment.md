@@ -53,7 +53,7 @@ To deploy a service:
 
 Example for Navidrome:
 ```bash
-cd ~/boy-pocket/services/navidrome
+cd ~/house-of-good-things/services/navidrome
 docker compose up -d
 ```
 
@@ -120,18 +120,18 @@ From your Windows machine:
 
 Using rsync (if available):
 ```bash
-rsync -avz --exclude '.git' C:\Users\tyler\important\projects\pi\boy-pocket/ tyler@192.168.1.115:~/boy-pocket/
+rsync -avz --exclude '.git' C:\Users\tyler\important\projects\pi\house-of-good-things/ tyler@192.168.1.115:~/house-of-good-things/
 ```
 
 Or using scp:
 ```bash
-scp -r C:\Users\tyler\important\projects\pi\boy-pocket tyler@192.168.1.115:~/
+scp -r C:\Users\tyler\important\projects\pi\house-of-good-things tyler@192.168.1.115:~/
 ```
 
 Using Git (recommended):
 ```bash
 ssh tyler@192.168.1.115
-cd ~/boy-pocket
+cd ~/house-of-good-things
 git pull origin main
 ```
 
@@ -216,13 +216,13 @@ ping 8.8.8.8
 Each service stores data in its `data/` directory. Back up regularly:
 
 ```bash
-tar -czf navidrome-backup-$(date +%Y%m%d).tar.gz ~/boy-pocket/services/navidrome/data
+tar -czf navidrome-backup-$(date +%Y%m%d).tar.gz ~/house-of-good-things/services/navidrome/data
 ```
 
 ### Restoring Service Data
 
 ```bash
-cd ~/boy-pocket/services/navidrome
+cd ~/house-of-good-things/services/navidrome
 docker compose down
 tar -xzf navidrome-backup-YYYYMMDD.tar.gz
 docker compose up -d

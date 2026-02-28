@@ -1,4 +1,4 @@
-# boy-pocket
+# house-of-good-things
 
 Raspberry Pi 5 multi-service host running on **fart-pi**.
 
@@ -55,7 +55,7 @@ All documentation is in the [docs](docs) directory:
 ## Project Structure
 
 ```
-boy-pocket/
+house-of-good-things/
 ├── docs/              # All documentation
 ├── services/          # Service configurations
 │   └── navidrome/    # Music streaming service

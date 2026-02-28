@@ -1,6 +1,6 @@
 # Documentation Index
 
-This directory contains all project documentation for the boy-pocket Raspberry Pi system.
+This directory contains all project documentation for the house-of-good-things Raspberry Pi system.
 
 ## Quick Links
 
@@ -66,7 +66,7 @@ docker ps
 
 Deploy a service:
 ```bash
-cd ~/boy-pocket/services/<service-name>
+cd ~/house-of-good-things/services/<service-name>
 docker compose up -d
 ```
 
@@ -84,8 +84,8 @@ docker compose logs -f
 ### Useful Paths
 
 - Music Library: `/home/tyler/music`
-- Service Data: `~/boy-pocket/services/<service>/data`
-- Scripts: `~/boy-pocket/scripts`
+- Service Data: `~/house-of-good-things/services/<service>/data`
+- Scripts: `~/house-of-good-things/scripts`
 
 ## Finding Information
 

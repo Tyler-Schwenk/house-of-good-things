@@ -1,4 +1,4 @@
-The resources in C:\Users\tyler\important\projects\pi\boy-pocket\docs are authoritative and must be referenced before making changes.  
+The resources in C:\Users\tyler\important\projects\pi\house-of-good-things\docs are authoritative and must be referenced before making changes.  
 They must also be kept up to date as changes are made.
 
 - docs/

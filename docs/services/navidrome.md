@@ -109,7 +109,7 @@ volumes:
 ### Step 3: Deploy
 
 ```bash
-cd ~/boy-pocket/services/navidrome
+cd ~/house-of-good-things/services/navidrome
 docker compose up -d
 ```
 
