@@ -9,6 +9,8 @@ services/*/config/*.log
 
 # Credentials and secrets
 secrets/
+keys/
+*/keys
 *.key
 *.pem
 *.crt
@@ -54,3 +56,13 @@ npm-debug.log*
 
 # Docker volumes (if using local testing)
 docker-compose.override.yml
+
+# Backup-related
+.restic-password
+*.tar.gz
+backups/
+backup-*.log
+
+# Restic repository data (if local testing)
+.restic/
+restic-repo/

@@ -5,14 +5,9 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 ## Current Documentation
 
 ### Planning & Architecture
-- [**Pre-Deployment Checklist**](pre-deployment.md) - Accounts and prerequisites needed
 - [**Architecture Plan**](architecture.md) - System design, planned services, and open questions
-- [**Phase 1 Deployment**](phase1-deployment.md) - Step-by-step guide for Tailscale and Public Square
 - [**Hardware & Network**](hardware.md) - Pi 5 specs and network configuration
-- [**Deployment Guide**](deployment.md) - General deployment procedures
-
-### External Documentation
-- [**Public Square API**](api/public-square-api.md) - API documentation for frontend developers
+- [**Deployment Guide**](deployment.md) - How to deploy services on fart-pi
 
 ### Services
 - [**Navidrome**](services/navidrome.md) - Music streaming (already deployed)

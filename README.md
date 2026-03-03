@@ -1,86 +1,169 @@
 # house-of-good-things
 
-Raspberry Pi 5 multi-service host running on **fart-pi**.
+Configuration repository for **fart-pi** - Raspberry Pi 5 home server.
 
-## Overview
+## Current Status
 
-This repository manages services and configuration for a headless Raspberry Pi 5 system. The Pi hosts self-hosted services accessible both locally and remotely.
+**Repository Status:**
+- Service configurations created and ready
+- Code is on your laptop (not yet on Pi)
+- Nothing deployed yet
 
-## Current Services
+**Phase 1 - Ready to Deploy:**
+1. **Public Square** - FastAPI + SQLite forum API
+   - Service structure created (not yet deployed)
+   - Publicly accessible via Tailscale Funnel
+   - Auth: JWT tokens (email/password)
+   - Features: Posts, comments, threads
+   - API docs at `/docs` endpoint
+2. **Tailscale** - VPN for secure remote access
+   - Service structure created (not yet deployed)
+   - Enable remote development
+   - Expose Public Square API publicly via Funnel
 
-### Navidrome
-Music streaming server compatible with Subsonic API. Access your music library from anywhere using clients like Feishin (desktop) or Symfonium (Android).
+**Phase 2+ - Future Services:**
+- Immich (photo management)
+- Beszel (monitoring)
+- Samba (local file sharing)
+- Off-site backups
 
-- Service directory: [services/navidrome](services/navidrome)
-- Documentation: [docs/services/navidrome.md](docs/services/navidrome.md)
+See full planning document: [docs/architecture.md](docs/architecture.md)
 
-## System Information
+## Hardware
 
+- **Pi**: Raspberry Pi 5 (8GB RAM)
 - **Hostname**: fart-pi
 - **OS**: Raspberry Pi OS (64-bit)
-- **Network**: Dual Ethernet + Wi-Fi
-- **Access**: SSH and Raspberry Pi Connect
+- **Network**: 
+  - Wi-Fi: 192.168.1.115
+  - Ethernet: 192.168.1.116
+- **Storage**: External SSD via USB (for media files)
 
-Full system details: [Raspberry Pi 5 System Setup Document.md](Raspberry%20Pi%205%20System%20Setup%20Document.md)
+More details: [docs/hardware.md](docs/hardware.md)
 
-## Quick Start
+## Repository Structure
 
-### Prerequisites
+```
+house-of-good-things/
+├── services/           # Docker Compose configs for each service
+│   ├── public-square/  # Forum API (ready to deploy)
+│   └── tailscale/      # VPN access (ready to deploy)
+├── docs/               # Documentation
+│   ├── pre-deployment.md    # Prerequisites checklist
+│   ├── phase1-deployment.md # Step-by-step deployment
+│   ├── architecture.md      # System planning
+│   ├── hardware.md          # Hardware specs
+│   └── api/                 # External API docs
+│       └── public-square-api.md
+└── scripts/            # Automation scripts (TBD)
+```
 
-SSH access to fart-pi:
+## Getting Started
+
+### Prerequisites Needed
+
+Before deploying to the Pi, you'll need:
+
+1. **Tailscale Account** (free) - https://login.tailscale.com
+2. **Docker on Pi** - Check if installed: `ssh tyler@192.168.1.115 docker --version`
+3. **Get Code to Pi** - Either via GitHub or direct copy
+
+See complete checklist: [docs/pre-deployment.md](docs/pre-deployment.md)
+
+### Deployment Process
+
+Once prerequisites are done:
+
+1. **Get code on Pi:**
+   ```bash
+   # Option A: Push to GitHub, then clone on Pi
+   # Option B: scp -r house-of-good-things tyler@192.168.1.115:~/
+   ```
+
+2. **Deploy services:**
+   - Follow step-by-step: [docs/phase1-deployment.md](docs/phase1-deployment.md)
+   - Deploy Tailscale first (~5 min)
+   - Then deploy Public Square (~10 min)
+
+3. **Test everything:**
+   - SSH via Tailscale
+   - Access API via public URL
+   - Connect frontend to backend
+
+## Planning & Architecture
+
+**Current Focus: Phase 1 Deployment**
+
+Building the initial infrastructure to host a public forum (Public Square):
+1. **Tailscale** - Secure VPN access + public Funnel feature
+2. **Public Square** - FastAPI + SQLite forum API
+
+Service structures are created in this repository. Frontend is already deployed on GitHub Pages. Backend will run on Pi and be publicly accessible via Tailscale Funnel (no port forwarding needed).
+
+**Phase 2+ services:**
+- Navidrome for music streaming
+- Immich for photo backup
+- Beszel for monitoring
+- Samba for local file sharing
+- Automated encrypted backups to parents' house
+
+**Key planning documents:**
+- [Pre-Deployment Checklist](docs/pre-deployment.md) - Accounts and prerequisites
+- [Architecture Plan](docs/architecture.md) - Phased deployment plan with technical decisions
+- [Phase 1 Deployment](docs/phase1-deployment.md) - Complete deployment guide
+- [Hardware & Network](docs/hardware.md) - Physical setup and networking
+
+## Quick Commands
+
+**SSH access:**
 ```bash
 ssh tyler@192.168.1.115
 ```
 
-### Initial Setup
-
-1. Install Docker on the Pi:
+**Check if Docker is installed:**
 ```bash
-./scripts/setup-docker.sh
+ssh tyler@192.168.1.115 docker --version
 ```
 
-2. Deploy a service:
+**Copy repo to Pi (if not using Git):**
 ```bash
-./scripts/deploy-service.sh navidrome
+scp -r house-of-good-things tyler@192.168.1.115:~/
+```
+
+**Deploy a new service:**
+```bash
+cd ~/house-of-good-things/services/<service-name>
+cp .env.example .env   # Configure secrets
+nano .env              # Edit configuration
+docker compose up -d   # Start service
 ```
 
 ## Documentation
 
-All documentation is in the [docs](docs) directory:
+All documentation is in the [docs/](docs) directory:
 
-- [Hardware & Network](docs/hardware.md) - Pi 5 specifications and network configuration
-- [Deployment Guide](docs/deployment.md) - How to deploy and manage services
-- [Services](docs/services/) - Individual service documentation
+- [Pre-Deployment Checklist](docs/pre-deployment.md) - Start here!
+- [Architecture Plan](docs/architecture.md) - Overall system design with open questions
+- [Phase 1 Deployment](docs/phase1-deployment.md) - Step-by-step deployment guide
+- [Public Square API](docs/api/public-square-api.md) - API documentation for frontend
+- [Hardware & Network](docs/hardware.md) - Physical setup and networking
 
-## Project Structure
+## Security Considerations
 
-```
-house-of-good-things/
-├── docs/              # All documentation
-├── services/          # Service configurations
-│   └── navidrome/    # Music streaming service
-├── scripts/          # Deployment and setup scripts
-└── README.md         # This file
-```
+**Current:**
+- No ports exposed to internet
+- Local network access only
 
-## Future Services
-
-Planned additions:
-- Home automation
-- Media management
-- Network monitoring
-- Development tools
-
-## Remote Access
-
-The Pi is accessible remotely via:
-- **Raspberry Pi Connect**: https://connect.raspberrypi.com
-- **Local SSH**: `ssh tyler@192.168.1.115` (Wi-Fi) or `ssh tyler@192.168.1.116` (Ethernet)
+**Planned:**
+- All remote access via encrypted VPN (Tailscale)
+- Public API exposure via Tailscale Funnel (HTTPS)
+- No router port forwarding needed
+- JWT authentication for API
+- Rate limiting on all endpoints
+- Container isolation
+- Encrypted backups
+- Read-only volume mounts where appropriate
 
 ## Contributing
 
-This is a personal project for managing fart-pi services and configuration.
-
-## License
-
-Personal use repository.
+This is a personal infrastructure project, but feel free to use it as reference for your own setups.
