@@ -10,16 +10,26 @@ Planning document for fart-pi multi-service home server. This will be updated as
 
 **What exists now:**
 - Raspberry Pi 5 (fart-pi) running Raspberry Pi OS
-- This repository on your laptop (not yet on Pi)
+- Docker and Docker Compose installed on Pi
+- Repository pushed to GitHub: https://github.com/Tyler-Schwenk/house-of-good-things
+- Repository cloned to Pi: ~/house-of-good-things
 - External SSD connected to Pi via USB
 
-**Ready to deploy (Phase 1):**
-1. **Tailscale** - VPN for secure remote access (service structure created)
-2. **Public Square** - FastAPI + SQLite forum API (service structure created)
+**Deployed Services:**
+1. **Tailscale** - VPN for secure remote access
+   - Status: Running and operational
+   - Tailscale IP: 100.72.84.128
+   - Accessible via: `ssh tyler@fart-pi` or `ssh tyler@100.72.84.128`
+   - Devices: fart-pi (Pi), tylerschwelapto (laptop)
+   - Funnel enabled for public API access
 
-**Not yet deployed:**
-- Nothing is running on the Pi yet
-- Repository needs to be pushed to Git and cloned to Pi
+2. **Public Square** - FastAPI + SQLite forum API
+   - Status: Running and operational
+   - Public URL: https://fart-pi.tail67548a.ts.net/
+   - API Documentation: https://fart-pi.tail67548a.ts.net/docs
+   - Health Check: https://fart-pi.tail67548a.ts.net/health
+   - Database: SQLite at /app/data/public_square.db
+   - Authentication: JWT tokens (routers not yet implemented)
 
 **Later additions (Phase 2+):**
 - Immich (photo management)

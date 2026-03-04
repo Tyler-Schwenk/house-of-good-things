@@ -5,21 +5,25 @@ Configuration repository for **fart-pi** - Raspberry Pi 5 home server.
 ## Current Status
 
 **Repository Status:**
-- Service configurations created and ready
-- Code is on your laptop (not yet on Pi)
-- Nothing deployed yet
+- Pushed to GitHub: https://github.com/Tyler-Schwenk/house-of-good-things
+- Cloned to Pi: ~/house-of-good-things
+- Docker installed on Pi
 
-**Phase 1 - Ready to Deploy:**
-1. **Public Square** - FastAPI + SQLite forum API
-   - Service structure created (not yet deployed)
-   - Publicly accessible via Tailscale Funnel
-   - Auth: JWT tokens (email/password)
-   - Features: Posts, comments, threads
-   - API docs at `/docs` endpoint
-2. **Tailscale** - VPN for secure remote access
-   - Service structure created (not yet deployed)
-   - Enable remote development
-   - Expose Public Square API publicly via Funnel
+**Deployed Services:**
+1. **Tailscale** - VPN for secure remote access
+   - Status: Running
+   - Access: `ssh tyler@fart-pi` from anywhere
+   - Tailscale IP: 100.72.84.128
+   - Devices: fart-pi (Pi), tylerschwelapto (laptop)
+   - Funnel enabled for public API access
+
+2. **Public Square** - FastAPI + SQLite forum API
+   - Status: Running and publicly accessible
+   - Public URL: https://fart-pi.tail67548a.ts.net/
+   - API Docs: https://fart-pi.tail67548a.ts.net/docs
+   - Health: https://fart-pi.tail67548a.ts.net/health
+   - Auth: JWT tokens (routers pending implementation)
+   - Features: Posts, comments, threads (endpoints pending)
 
 **Phase 2+ - Future Services:**
 - Immich (photo management)
@@ -35,9 +39,11 @@ See full planning document: [docs/architecture.md](docs/architecture.md)
 - **Hostname**: fart-pi
 - **OS**: Raspberry Pi OS (64-bit)
 - **Network**: 
-  - Wi-Fi: 192.168.1.115
-  - Ethernet: 192.168.1.116
+  - Local Wi-Fi: 192.168.1.115
+  - Local Ethernet: 192.168.1.116
+  - Tailscale: 100.72.84.128 (accessible from anywhere)
 - **Storage**: External SSD via USB (for media files)
+- **Docker**: Version 29.2.1, Compose v5.1.0
 
 More details: [docs/hardware.md](docs/hardware.md)
 
