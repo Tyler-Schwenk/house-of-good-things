@@ -25,11 +25,11 @@ Configuration repository for **fart-pi** - Raspberry Pi 5 home server.
    - Auth: JWT tokens (routers pending implementation)
    - Features: Posts, comments, threads (endpoints pending)
 
-**Ready to Deploy:**
 3. **Beszel** - System monitoring
-   - Lightweight monitoring dashboard
-   - Tracks CPU, RAM, disk, Docker containers
-   - Port: 8090
+   - Status: Running and operational
+   - Dashboard: http://100.72.84.128:8090 (via Tailscale)
+   - Monitoring: CPU, RAM, disk, temperature, network, containers
+   - Agent version: 0.18.4
 
 **Phase 2+ - Future Services:**
 - Immich (photo management)

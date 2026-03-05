@@ -2,6 +2,14 @@
 
 System monitoring dashboard for fart-pi.
 
+## Status
+
+**Deployed and operational**
+- Dashboard accessible at http://100.72.84.128:8090
+- Agent version: 0.18.4
+- Monitoring system: fart-pi
+- Current metrics: CPU 0.14%, RAM 9.13%, Disk 14.4%, Temp 53.73°C
+
 ## Purpose
 
 Provides real-time visibility into Pi system health and resource usage. Essential for:
@@ -49,9 +57,19 @@ https://fart-pi.tail67548a.ts.net:8090
 
 ## Configuration
 
-Default settings are sufficient for basic monitoring. Optional configurations:
+### System Connection
+
+When adding the Pi as a monitored system in the dashboard:
+- **Name**: fart-pi
+- **Host**: 172.17.0.1 (Docker bridge IP - allows hub container to reach agent on host)
+- **Port**: 45876
+- **Key**: SSH public key from \"Add System\" dialog (ssh-ed25519...)
+
+**Important:** Use `172.17.0.1` not `127.0.0.1`. The hub runs in a container and needs the Docker bridge IP to reach the agent running on the host machine.
 
 ### Alert Thresholds
+
+Default settings are sufficient for basic monitoring. Optional configurations:
 
 Configure in web UI:
 - CPU usage > 80%

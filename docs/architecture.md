@@ -31,12 +31,13 @@ Planning document for fart-pi multi-service home server. This will be updated as
    - Database: SQLite at /app/data/public_square.db
    - Authentication: JWT tokens (routers not yet implemented)
 
-**Ready to Deploy:**
 3. **Beszel** - System monitoring and health tracking
-   - Status: Service structure created, ready to deploy
-   - Purpose: Monitor CPU, RAM, disk, containers
-   - Port: 8090
-   - Lightweight (< 1% CPU, ~50MB RAM)
+   - Status: Running and operational
+   - Dashboard: http://100.72.84.128:8090 (via Tailscale)
+   - Hub + Agent architecture
+   - Monitoring: CPU, RAM, disk, temperature, network, Docker containers
+   - Agent version: 0.18.4
+   - Resource usage: <1% CPU, ~50MB RAM
 
 **Later additions (Phase 2+):**
 - Immich (photo management)

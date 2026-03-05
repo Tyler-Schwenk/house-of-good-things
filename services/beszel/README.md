@@ -59,11 +59,13 @@ docker compose up -d agent
 
 Back in the web UI:
 1. System name: fart-pi
-2. Host: 127.0.0.1 (agent runs on same machine as hub)
+2. Host: 172.17.0.1 (Docker bridge IP to reach host from container)
 3. Port: 45876 (default agent port)
 4. Click "Add"
 
 The Pi should now appear in the dashboard with live metrics.
+
+**Note:** Use `172.17.0.1` not `127.0.0.1` because the hub container needs to reach the agent on the host machine through Docker's bridge network.
 
 ## Management
 
