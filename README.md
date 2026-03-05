@@ -25,9 +25,14 @@ Configuration repository for **fart-pi** - Raspberry Pi 5 home server.
    - Auth: JWT tokens (routers pending implementation)
    - Features: Posts, comments, threads (endpoints pending)
 
+**Ready to Deploy:**
+3. **Beszel** - System monitoring
+   - Lightweight monitoring dashboard
+   - Tracks CPU, RAM, disk, Docker containers
+   - Port: 8090
+
 **Phase 2+ - Future Services:**
 - Immich (photo management)
-- Beszel (monitoring)
 - Samba (local file sharing)
 - Off-site backups
 
@@ -52,13 +57,17 @@ More details: [docs/hardware.md](docs/hardware.md)
 ```
 house-of-good-things/
 ├── services/           # Docker Compose configs for each service
-│   ├── public-square/  # Forum API (ready to deploy)
-│   └── tailscale/      # VPN access (ready to deploy)
+│   ├── beszel/         # System monitoring (ready to deploy)
+│   ├── public-square/  # Forum API (deployed)
+│   └── tailscale/      # VPN access (deployed)
 ├── docs/               # Documentation
 │   ├── pre-deployment.md    # Prerequisites checklist
 │   ├── phase1-deployment.md # Step-by-step deployment
 │   ├── architecture.md      # System planning
 │   ├── hardware.md          # Hardware specs
+│   ├── services/            # Service-specific docs
+│   │   ├── beszel.md        # Monitoring documentation
+│   │   └── navidrome.md     # Music streaming (future)
 │   └── api/                 # External API docs
 │       └── public-square-api.md
 └── scripts/            # Automation scripts (TBD)

@@ -15,7 +15,8 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 - [**Public Square API**](api/public-square-api.md) - API documentation for frontend developers
 
 ### Services
-- [**Navidrome**](services/navidrome.md) - Music streaming (already deployed)
+- [**Beszel**](services/beszel.md) - System monitoring and health tracking
+- [**Navidrome**](services/navidrome.md) - Music streaming (future deployment)
 
 ## System Overview
 
