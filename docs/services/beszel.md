@@ -21,11 +21,19 @@ Provides real-time visibility into Pi system health and resource usage. Essentia
 
 ## Architecture
 
-Single container deployment:
+Two-container deployment:
+
+**Hub (Web Dashboard):**
 - **Image**: henrygd/beszel:latest
 - **Port**: 8090 (HTTP web interface)
 - **Storage**: SQLite database in ./data/
-- **Host Access**: Reads system metrics from host via Docker API
+- **Purpose**: Web UI, receives metrics from agents
+
+**Agent (Metrics Collector):**
+- **Image**: henrygd/beszel-agent:latest
+- **Port**: 45876 (internal communication with hub)
+- **Host Access**: Reads system metrics via /proc, /sys, and Docker socket
+- **Purpose**: Collects CPU, RAM, disk, container stats and sends to hub
 
 ## Access
 

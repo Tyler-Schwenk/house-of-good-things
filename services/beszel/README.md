@@ -14,34 +14,56 @@ Beszel provides real-time monitoring of:
 
 ## Setup
 
-### 1. Deploy Beszel
+### 1. Deploy Beszel Hub
 
 ```bash
 cd ~/house-of-good-things/services/beszel
-docker compose up -d
+docker compose up -d beszel
 ```
 
-### 2. Access Dashboard
+### 2. Access Dashboard and Get Agent Key
 
 Via Tailscale (from anywhere):
 ```
 http://100.72.84.128:8090
 ```
 
-Or enable Funnel for public access:
+1. Create admin account
+2. Click "Add System"
+3. Copy the agent key that appears
+4. Save it for the next step
+
+### 3. Configure and Start Agent
+
+On the Pi:
 ```bash
-cd ~/house-of-good-things/services/tailscale
-docker exec tailscale tailscale funnel 8090
+cd ~/house-of-good-things/services/beszel
+
+# Create .env file with your agent key
+nano .env
 ```
 
-Then access at: https://fart-pi.tail67548a.ts.net:8090
+Paste this, replacing with your actual key from step 2:
+```
+AGENT_KEY=your-key-here
+```
 
-### 3. Initial Configuration
+Save (Ctrl+O, Enter) and exit (Ctrl+X).
 
-On first access:
-1. Create admin account
-2. System will auto-detect the Pi as a monitored host
-3. Configure alert thresholds (optional)
+Start the agent:
+```bash
+docker compose up -d agent
+```
+
+### 4. Add System in Dashboard
+
+Back in the web UI:
+1. System name: fart-pi
+2. Host: 127.0.0.1 (agent runs on same machine as hub)
+3. Port: 45876 (default agent port)
+4. Click "Add"
+
+The Pi should now appear in the dashboard with live metrics.
 
 ## Management
 
