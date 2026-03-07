@@ -42,7 +42,8 @@ Before deploying services to fart-pi, complete these prerequisites.
 
 **Option A: Same Local Network (Easiest)**
 - Be on the same WiFi/network as the Pi
-- SSH directly: `ssh tyler@192.168.1.115` or `ssh tyler@192.168.1.116`
+- SSH via Ethernet (recommended): `ssh tyler@192.168.1.116`
+- Or WiFi: `ssh tyler@192.168.1.115`
 
 **Option B: Remote Access Tool**
 - If Raspberry Pi Connect or another remote access tool is configured, use it
@@ -65,7 +66,10 @@ ssh tyler@100.124.76.27                  # NetBird IP
 If you're on the same local network, verify SSH works:
 
 ```bash
-# From your laptop
+# From your laptop (Ethernet is more reliable)
+ssh tyler@192.168.1.116
+
+# Or try WiFi
 ssh tyler@192.168.1.115
 ```
 
@@ -170,6 +174,10 @@ scp services/public-square/app/main.py tyler@192.168.1.115:~/house-of-good-thing
 Before starting deployment, verify on the Pi:
 
 ```bash
+# Ethernet (more reliable)
+ssh tyler@192.168.1.116
+
+# Or WiFi
 ssh tyler@192.168.1.115
 
 # Check Docker

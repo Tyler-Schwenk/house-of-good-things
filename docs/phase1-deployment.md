@@ -27,6 +27,10 @@ Total deployment time: 30-45 minutes
 
 SSH into the Pi:
 ```bash
+# Via Ethernet (more reliable)
+ssh tyler@192.168.1.116
+
+# Or via WiFi
 ssh tyler@192.168.1.115
 ```
 

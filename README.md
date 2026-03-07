@@ -132,17 +132,21 @@ Service structures are created in this repository. Frontend is deployed on GitHu
 
 **SSH access:**
 ```bash
+# Via Ethernet (recommended)
+ssh tyler@192.168.1.116
+
+# Or via WiFi
 ssh tyler@192.168.1.115
 ```
 
 **Check if Docker is installed:**
 ```bash
-ssh tyler@192.168.1.115 docker --version
+ssh tyler@192.168.1.116 docker --version
 ```
 
 **Copy repo to Pi (if not using Git):**
 ```bash
-scp -r house-of-good-things tyler@192.168.1.115:~/
+scp -r house-of-good-things tyler@192.168.1.116:~/
 ```
 
 **Deploy a new service:**
