@@ -96,7 +96,7 @@ ping 192.168.1.115
 
 Future network enhancements:
 - Static DHCP reservation for consistent Wi-Fi IP
-- Tailscale installation for secure remote SSH access
+- NetBird installation for secure remote SSH access
 - SSH key authentication instead of password
 - Automatic system updates configuration
 

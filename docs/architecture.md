@@ -16,24 +16,24 @@ Planning document for fart-pi multi-service home server. This will be updated as
 - External SSD connected to Pi via USB
 
 **Deployed Services:**
-1. **Tailscale** - VPN for secure remote access
-   - Status: Running and operational
-   - Tailscale IP: 100.72.84.128
-   - Accessible via: `ssh tyler@fart-pi` or `ssh tyler@100.72.84.128`
-   - Devices: fart-pi (Pi), tylerschwelapto (laptop)
-   - Funnel enabled for public API access
+1. **NetBird** - VPN for secure remote access (Bird Wide Web)
+   - Status: To be deployed on fart-pi
+   - NetBird IP: 100.124.76.27
+   - Network Domain: johnserv.garrepi.dev
+   - Management: Self-hosted by John at https://johnserv.garrepi.dev
+   - Connected Peers: JohnSERV (100.124.56.240), JohnNAS, Bebop
 
 2. **Public Square** - FastAPI + SQLite forum API
    - Status: Running and operational
-   - Public URL: https://fart-pi.tail67548a.ts.net/
-   - API Documentation: https://fart-pi.tail67548a.ts.net/docs
-   - Health Check: https://fart-pi.tail67548a.ts.net/health
+   - Access: http://fart-pi.johnserv.garrepi.dev:8000 or http://100.124.76.27:8000
+   - API Documentation: http://fart-pi.johnserv.garrepi.dev:8000/docs
+   - Health Check: http://fart-pi.johnserv.garrepi.dev:8000/health
    - Database: SQLite at /app/data/public_square.db
    - Authentication: JWT tokens (routers not yet implemented)
 
 3. **Beszel** - System monitoring and health tracking
    - Status: Running and operational
-   - Dashboard: http://100.72.84.128:8090 (via Tailscale)
+   - Dashboard: http://100.124.76.27:8090 (via NetBird)
    - Hub + Agent architecture
    - Monitoring: CPU, RAM, disk, temperature, network, Docker containers
    - Agent version: 0.18.4
@@ -60,20 +60,20 @@ Planning document for fart-pi multi-service home server. This will be updated as
   - User auth: JWT (email/password)
   - Features: Posts, comments, threads
   - Frontend: GitHub Pages (already deployed separately)
-  - Exposed publicly via Tailscale Funnel
+  - Accessible via NetBird network
   - Port: 8000
   - API docs: `/docs` endpoint
   - **Status**: Service structure created, routers not yet implemented
   - **Why first**: Core personal project, drives need for other services
 
 **Infrastructure**
-- **Tailscale** 🚧 - Secure remote access
-  - VPN mesh network
+- **NetBird** 🚧 - Secure remote access (Bird Wide Web)
+  - WireGuard-based VPN mesh network
   - No port forwarding needed
-  - Enable Funnel to expose Public Square API publicly
-  - Access all services remotely via hostname
-  - **Status**: Service structure created, not yet deployed
-  - **Why first**: Required for remote development and Funnel feature
+  - Access all services remotely via hostname or IP
+  - Peer-to-peer connectivity with friends' servers
+  - **Status**: Account created, not yet deployed on fart-pi
+  - **Why first**: Required for remote development and Bird Wide Web connectivity
 
 ### Phase 2+: Future Services
 
@@ -81,7 +81,7 @@ Planning document for fart-pi multi-service home server. This will be updated as
 - **Navidrome** ✅ - Music streaming (Subsonic API compatible)
   - Already deployed
   - Port: 4533
-  - Will be accessible via Tailscale once deployed
+  - Will be accessible via NetBird once deployed
   
 - **Immich** 📋 - Photo management with mobile backup
   - Self-hosted Google Photos alternative
@@ -101,14 +101,14 @@ Planning document for fart-pi multi-service home server. This will be updated as
   - SMB/CIFS for Windows/Mac/Linux
   - Access Pi files from any local device
   - Port: 445
-  - Local network only (not via Tailscale)
+  - Local network only
 
 **Backups**
 - **Off-site backup** 📋 - To parents' house
   - Automated encrypted backups
   - Tool: Probably Restic
   - Target: Another Raspberry Pi
-  - Connected via Tailscale
+  - Connected via NetBird
 
 Legend: ✅ Deployed | 🚧 Next Up | 📋 Future
 
@@ -135,7 +135,7 @@ Planned directories:
 ├── services/                         # Service configs
 │   ├── navidrome/                   # ✅ Exists
 │   ├── immich/                      # 📋 To create
-│   ├── tailscale/                   # 📋 To create
+│   ├── netbird/                     # 📋 To create
 │   └── ...
 ├── docs/                            # Documentation
 └── scripts/                         # Automation scripts
@@ -159,7 +159,7 @@ Each service directory contains:
 Raspberry Pi OS (Host)
 ├── Docker Engine
 │   ├── Navidrome container ✅
-│   ├── Tailscale container 📋
+│   ├── NetBird container 📋
 │   ├── Immich containers 📋
 │   ├── Monitoring container 📋
 │   └── Samba container 📋
@@ -184,34 +184,35 @@ Your PC/Phone (on WiFi) → 192.168.1.115:4533 → Navidrome
 - Direct access when on home network
 - Fast (local speeds)
 
-### Remote Access (via Tailscale - Planned)
+### Remote Access (via NetBird)
 ```
-Your Phone (anywhere) → Tailscale VPN → fart-pi:4533 → Navidrome
+Your Phone (anywhere) → NetBird VPN → fart-pi:4533 → Navidrome
 ```
 - Peer-to-peer encrypted connection
 - No port forwarding needed
-- Access via: `http://fart-pi:4533`
+- Access via: `http://fart-pi.johnserv.garrepi.dev:4533` or `http://100.124.76.27:4533`
 
-**Tailscale Benefits:**
+**NetBird Benefits:**
 - No open ports on home router
-- End-to-end encrypted
+- End-to-end encrypted (WireGuard)
 - Works from anywhere
 - Automatic local network optimization
+- Part of Bird Wide Web collaborative network
 
 ### Service Port Plan
 
 | Service | Port | Local Access | Remote Access |
 |---------|------|--------------|---------------|
-| Navidrome | 4533 | ✅ | 📋 (via Tailscale) |
-| Immich | 2283 | 📋 | 📋 (via Tailscale) |
-| Monitoring | 8090 | 📋 | 📋 (via Tailscale) |
+| Navidrome | 4533 | ✅ | 📋 (via NetBird) |
+| Immich | 2283 | 📋 | 📋 (via NetBird) |
+| Monitoring | 8090 | 📋 | 📋 (via NetBird) |
 | Samba | 445 | 📋 | ❌ (local only) |
-| Blog Backend | 3000 | 📋 | 📋 (via Tailscale) |
+| Blog Backend | 3000 | 📋 | 📋 (via NetBird) |
 
 ## Security Approach
 
 **Remote Access:**
-- All remote access via Tailscale VPN
+- All remote access via NetBird VPN
 - No ports exposed to internet
 - No router port forwarding
 
@@ -248,7 +249,7 @@ Your Phone (anywhere) → Tailscale VPN → fart-pi:4533 → Navidrome
 
 ### Backup Target
 - Another Raspberry Pi at parents' house
-- Connected via Tailscale
+- Connected via NetBird
 - Automated via cron
 
 ### Backup Tool
@@ -262,12 +263,12 @@ Probably Restic:
 
 ### Phase 1: Initial Deployment (CURRENT FOCUS)
 
-**Step 1: Deploy Tailscale**
-1. Create `services/tailscale/` with docker-compose.yml
-2. Get Tailscale auth key from admin console
+**Step 1: Deploy NetBird**
+1. Create `services/netbird/` with docker-compose.yml
+2. Get NetBird setup key from John's dashboard (https://johnserv.garrepi.dev)
 3. Deploy container on Pi
 4. Verify connection from laptop/phone
-5. Test SSH via Tailscale hostname (ssh tyler@fart-pi)
+5. Test SSH via NetBird hostname (ssh tyler@fart-pi.johnserv.garrepi.dev)
 
 **Step 2: Deploy Blog Backend**
 1. Create `services/blog-backend/` structure
@@ -278,7 +279,7 @@ Probably Restic:
    - SQLite database
 3. Create Dockerfile and docker-compose.yml
 4. Test locally, then deploy to Pi
-5. Enable Tailscale Funnel to expose publicly
+5. Access via NetBird network
 6. Connect GitHub Pages frontend to API
 
 **Step 3: Verify & Document**
@@ -307,16 +308,17 @@ Probably Restic:
 - [x] Tech stack? **→ FastAPI (Python) - open source, well-documented, AI-friendly**
 - [x] Database choice? **→ SQLite - simpler, lighter, perfect for personal blog**
 - [x] Auth strategy? **→ FastAPI-Users library (email/password + OAuth)**
-- [x] Public access method? **→ Tailscale Funnel - free HTTPS, no port forwarding**
+- [x] Network access? **→ NetBird - part of Bird Wide Web collaborative network**
 - [ ] Frontend-backend communication details?
 - [ ] Rate limiting to prevent spam?
 - [ ] Moderation features needed?
 
-### Phase 1: Tailscale
-- [ ] Personal vs team account? (Free personal likely sufficient)
-- [x] Enable MagicDNS? **→ Yes - allows ssh tyler@fart-pi**
-- [x] Funnel for blog API? **→ Yes - expose port 8000 publicly**
-- [ ] Subnet router mode needed?
+### Phase 1: NetBird
+- [x] Network choice? **→ NetBird - chosen for collaborative setup with John**
+- [x] Self-hosted vs cloud? **→ Self-hosted by John = unlimited users/peers**
+- [x] Collaborative setup? **→ Yes - Bird Wide Web with John and friends**
+- [x] Enable DNS? **→ Yes - allows ssh tyler@fart-pi.johnserv.garrepi.dev**
+- [ ] Access control policies needed?
 
 ### Phase 2+: Storage
 - [ ] What size SSD? (500GB, 1TB, 2TB?)
@@ -341,10 +343,10 @@ Probably Restic:
 ## Key Learning Points
 
 ### From Network Discussion
-- **Tailscale routing**: Direct peer-to-peer, not through external servers
-- **Local optimization**: When on same WiFi, stays local
-- **DERP relays**: Only used as fallback when direct connection fails
-- **Coordination servers**: Only for initial handshake, not data transfer
+- **NetBird routing**: WireGuard-based peer-to-peer connections
+- **Local optimization**: When on same network, stays local
+- **Relay servers**: Used as fallback when direct connection fails
+- **Signal servers**: Only for initial handshake, not data transfer
 
 ### From Docker Discussion
 - **Containers are siblings**: Not nested, all at same level
@@ -354,8 +356,8 @@ Probably Restic:
 
 ### From Architecture Discussion
 - **Orchestration**: Docker Compose reads configs and manages containers
-- **No special container**: Tailscale is a container like any other
-- **Network paths**: Local traffic stays local, remote goes through Tailscale
+- **No special container**: NetBird is a container like any other
+- **Network paths**: Local traffic stays local, remote goes through NetBird
 
 ## Design Principles
 
@@ -369,7 +371,7 @@ Probably Restic:
 ## Resources
 
 - [Docker Compose Docs](https://docs.docker.com/compose/)
-- [Tailscale Documentation](https://tailscale.com/kb/)
+- [NetBird Documentation](https://docs.netbird.io/)
 - [Raspberry Pi Docs](https://www.raspberrypi.com/documentation/)
 
 ---

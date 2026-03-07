@@ -280,7 +280,7 @@ Wi-Fi:
 Suggested upgrades:
 
 - Static DHCP reservation for Wi-Fi IP
-- Tailscale installation for reliable remote SSH
+- NetBird installation for reliable remote SSH
 - Automatic updates configuration
 - SSH key authentication
 

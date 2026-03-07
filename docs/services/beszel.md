@@ -45,14 +45,14 @@ Two-container deployment:
 
 ## Access
 
-**Via Tailscale IP (private):**
+**Via NetBird IP (private):**
 ```
-http://100.72.84.128:8090
+http://100.124.76.27:8090
 ```
 
-**Via Tailscale Funnel (public - optional):**
+**Via local network:**
 ```
-https://fart-pi.tail67548a.ts.net:8090
+http://192.168.1.115:8090
 ```
 
 ## Configuration
@@ -83,13 +83,13 @@ Default: 30 days of historical data. Configurable in web UI settings.
 ## Security
 
 **Private access (recommended):**
-- Only accessible via Tailscale network
+- Only accessible via NetBird network or local network
 - Protected by Beszel's built-in authentication
 
 **Public access (optional):**
-- Enable Funnel if you want to check Pi status from non-Tailscale devices
+- Set up Cloudflare Tunnel or reverse proxy if needed
 - Use strong admin password
-- Consider IP allowlisting in Tailscale settings
+- Consider firewall rules and access control
 
 ## Maintenance
 

@@ -7,7 +7,7 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 ### Planning & Architecture
 - [**Pre-Deployment Checklist**](pre-deployment.md) - Accounts and prerequisites needed
 - [**Architecture Plan**](architecture.md) - System design, planned services, and open questions
-- [**Phase 1 Deployment**](phase1-deployment.md) - Step-by-step guide for Tailscale and Public Square
+- [**Phase 1 Deployment**](phase1-deployment.md) - Step-by-step guide for NetBird and Public Square
 - [**Hardware & Network**](hardware.md) - Pi 5 specs and network configuration
 - [**Deployment Guide**](deployment.md) - General deployment procedures
 
@@ -26,7 +26,7 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 - External SSD for media storage
 
 **What's planned:**
-- Tailscale VPN for remote access
+- NetBird VPN for remote access (self-hosted by John)
 - Immich photo management
 - Monitoring solution
 - Samba file sharing
@@ -95,4 +95,4 @@ docs/
 
 - [Docker Compose Docs](https://docs.docker.com/compose/)
 - [Raspberry Pi Documentation](https://www.raspberrypi.com/documentation/)
-- [Tailscale Documentation](https://tailscale.com/kb/) (for future use)
+- [NetBird Documentation](https://docs.netbird.io/)

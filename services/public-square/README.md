@@ -25,7 +25,7 @@ Public Square is a RESTful API backend for a public forum/blog platform. It prov
 ## Prerequisites
 
 - Docker and Docker Compose
-- Tailscale deployed (for Funnel feature)
+- NetBird deployed (for Bird Wide Web access)
 
 ## Configuration
 
@@ -254,7 +254,7 @@ sudo chown -R $USER:$USER data/
 2. Add rate limiting to endpoints
 3. Test authentication flow
 4. Connect frontend to API
-5. Enable Tailscale Funnel for public access
+5. Access via NetBird network
 
 ## References
 

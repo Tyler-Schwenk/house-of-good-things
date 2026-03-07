@@ -146,7 +146,7 @@ Common ports:
 
 To access services:
 - **Local**: http://192.168.1.115:PORT
-- **Remote**: Configure port forwarding on router or use Tailscale
+- **Remote**: Configure port forwarding on router or use NetBird
 
 ### Firewall Configuration
 
@@ -254,12 +254,16 @@ sudo apt upgrade -y
 
 Change default passwords for all services after deployment.
 
-### Consider Tailscale
+### Consider NetBird
 
 For secure remote access without port forwarding:
+
+See [services/netbird/README.md](../../services/netbird/README.md) for Docker-based setup.
+
+Alternatively, install natively:
 ```bash
-curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscale up
+curl -fsSL https://pkgs.netbird.io/install.sh | sh
+sudo netbird up
 ```
 
 ## Monitoring

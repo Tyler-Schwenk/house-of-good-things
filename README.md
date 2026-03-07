@@ -10,24 +10,24 @@ Configuration repository for **fart-pi** - Raspberry Pi 5 home server.
 - Docker installed on Pi
 
 **Deployed Services:**
-1. **Tailscale** - VPN for secure remote access
-   - Status: Running
-   - Access: `ssh tyler@fart-pi` from anywhere
-   - Tailscale IP: 100.72.84.128
-   - Devices: fart-pi (Pi), tylerschwelapto (laptop)
-   - Funnel enabled for public API access
+1. **NetBird** - VPN for secure remote access (Bird Wide Web)
+   - Status: To be deployed
+   - Network: Bird Wide Web (johnserv.garrepi.dev)
+   - NetBird IP: 100.124.76.27
+   - Management: Self-hosted by John at https://johnserv.garrepi.dev
+   - Connected Peers: JohnSERV, JohnNAS, Bebop
 
 2. **Public Square** - FastAPI + SQLite forum API
-   - Status: Running and publicly accessible
-   - Public URL: https://fart-pi.tail67548a.ts.net/
-   - API Docs: https://fart-pi.tail67548a.ts.net/docs
-   - Health: https://fart-pi.tail67548a.ts.net/health
+   - Status: Running
+   - Access: http://fart-pi.johnserv.garrepi.dev:8000
+   - API Docs: http://fart-pi.johnserv.garrepi.dev:8000/docs
+   - Health: http://fart-pi.johnserv.garrepi.dev:8000/health
    - Auth: JWT tokens (routers pending implementation)
    - Features: Posts, comments, threads (endpoints pending)
 
 3. **Beszel** - System monitoring
    - Status: Running and operational
-   - Dashboard: http://100.72.84.128:8090 (via Tailscale)
+   - Dashboard: http://100.124.76.27:8090 (via NetBird)
    - Monitoring: CPU, RAM, disk, temperature, network, containers
    - Agent version: 0.18.4
 
@@ -46,7 +46,7 @@ See full planning document: [docs/architecture.md](docs/architecture.md)
 - **Network**: 
   - Local Wi-Fi: 192.168.1.115
   - Local Ethernet: 192.168.1.116
-  - Tailscale: 100.72.84.128 (accessible from anywhere)
+  - NetBird: 100.124.76.27 (Bird Wide Web access)
 - **Storage**: External SSD via USB (for media files)
 - **Docker**: Version 29.2.1, Compose v5.1.0
 
@@ -58,8 +58,8 @@ More details: [docs/hardware.md](docs/hardware.md)
 house-of-good-things/
 ├── services/           # Docker Compose configs for each service
 │   ├── beszel/         # System monitoring (ready to deploy)
-│   ├── public-square/  # Forum API (deployed)
-│   └── tailscale/      # VPN access (deployed)
+│   ├── netbird/        # VPN access (Bird Wide Web)
+│   └── public-square/  # Forum API (deployed)
 ├── docs/               # Documentation
 │   ├── pre-deployment.md    # Prerequisites checklist
 │   ├── phase1-deployment.md # Step-by-step deployment
@@ -79,7 +79,7 @@ house-of-good-things/
 
 Before deploying to the Pi, you'll need:
 
-1. **Tailscale Account** (free) - https://login.tailscale.com
+1. **NetBird Account** - Access to John's self-hosted instance at https://johnserv.garrepi.dev
 2. **Docker on Pi** - Check if installed: `ssh tyler@192.168.1.115 docker --version`
 3. **Get Code to Pi** - Either via GitHub or direct copy
 
@@ -97,23 +97,23 @@ Once prerequisites are done:
 
 2. **Deploy services:**
    - Follow step-by-step: [docs/phase1-deployment.md](docs/phase1-deployment.md)
-   - Deploy Tailscale first (~5 min)
+   - Deploy NetBird first (~5 min)
    - Then deploy Public Square (~10 min)
 
 3. **Test everything:**
-   - SSH via Tailscale
-   - Access API via public URL
-   - Connect frontend to backend
+   - SSH via NetBird
+   - Access services via NetBird network
+   - Verify connectivity with other Bird Wide Web peers
 
 ## Planning & Architecture
 
 **Current Focus: Phase 1 Deployment**
 
 Building the initial infrastructure to host a public forum (Public Square):
-1. **Tailscale** - Secure VPN access + public Funnel feature
+1. **NetBird** - Secure VPN access as part of the Bird Wide Web
 2. **Public Square** - FastAPI + SQLite forum API
 
-Service structures are created in this repository. Frontend is already deployed on GitHub Pages. Backend will run on Pi and be publicly accessible via Tailscale Funnel (no port forwarding needed).
+Service structures are created in this repository. Frontend is deployed on GitHub Pages. Backend runs on Pi and is accessible via the NetBird network.
 
 **Phase 2+ services:**
 - Navidrome for music streaming
@@ -170,8 +170,8 @@ All documentation is in the [docs/](docs) directory:
 - Local network access only
 
 **Planned:**
-- All remote access via encrypted VPN (Tailscale)
-- Public API exposure via Tailscale Funnel (HTTPS)
+- All remote access via encrypted VPN (NetBird/WireGuard)
+- Bird Wide Web peer-to-peer connectivity
 - No router port forwarding needed
 - JWT authentication for API
 - Rate limiting on all endpoints

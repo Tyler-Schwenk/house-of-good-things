@@ -1,6 +1,6 @@
 # Phase 1 Deployment Guide
 
-Step-by-step guide for deploying Tailscale and Public Square API on fart-pi.
+Step-by-step guide for deploying NetBird and Public Square API on fart-pi.
 
 ## Prerequisites
 
@@ -8,15 +8,15 @@ Step-by-step guide for deploying Tailscale and Public Square API on fart-pi.
 - Network access to Pi (same local network, Pi Connect, or physical access)
 - Docker and Docker Compose installed on Pi
 - Git installed on Pi
-- Tailscale account created at https://login.tailscale.com
-- Auth key generated and saved (see [pre-deployment.md](pre-deployment.md))
+- NetBird account on John's self-hosted instance: https://johnserv.garrepi.dev
+- Setup key generated and saved (see [pre-deployment.md](pre-deployment.md))
 
-**Network Access Note:** If you're remote (coffee shop, etc.), use Raspberry Pi Connect or wait until you're on the same network as the Pi. After Tailscale is deployed, you can access from anywhere.
+**Network Access Note:** If you're remote (coffee shop, etc.), use Raspberry Pi Connect or wait until you're on the same network as the Pi. After NetBird is deployed, you can access from anywhere via the Bird Wide Web network.
 
 ## Deployment Overview
 
 Phase 1 consists of two services:
-1. **Tailscale**: VPN for remote access and Funnel feature
+1. **NetBird**: VPN for remote access as part of Bird Wide Web
 2. **Public Square**: Forum API backend
 
 Total deployment time: 30-45 minutes
@@ -45,44 +45,46 @@ ls -la services/
 
 Should show:
 ```
+netbird/
 public-square/
-tailscale/
 ```
 
-## Step 2: Deploy Tailscale
+## Step 2: Deploy NetBird
 
-### 2.1 Get Tailscale Auth Key
+### 2.1 Get NetBird Setup Key
 
-1. Visit https://login.tailscale.com/admin/settings/keys
-2. Click "Generate auth key"
-3. Configure:
-   - Reusable: Yes
-   - Ephemeral: No
-   - Pre-approved: Yes
-4. Copy the key (starts with `tskey-auth-`)
+1. Visit **https://johnserv.garrepi.dev**
+2. Navigate to "Setup Keys" in the sidebar
+3. Click "Create Setup Key"
+4. Configure:
+   - Name: fart-pi (or descriptive name)
+   - Type: Reusable
+   - Expiration: Choose appropriate duration (e.g., 30 days)
+   - Auto-assign groups: (optional)
+5. Copy the generated setup key
 
-### 2.2 Configure Tailscale
+### 2.2 Configure NetBird
 
 ```bash
-cd ~/house-of-good-things/services/tailscale
+cd ~/house-of-good-things/services/netbird
 cp .env.example .env
 nano .env
 ```
 
-Paste your auth key:
+Paste your setup key:
 ```env
-TS_AUTHKEY=tskey-auth-XXXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+NB_SETUP_KEY=your-setup-key-here
 ```
 
 Save and exit (Ctrl+X, Y, Enter).
 
-### 2.3 Deploy Tailscale Container
+### 2.3 Deploy NetBird Container
 
 ```bash
 docker compose up -d
 ```
 
-### 2.4 Verify Tailscale Connection
+### 2.4 Verify NetBird Connection
 
 ```bash
 # Check container status
@@ -91,31 +93,28 @@ docker compose ps
 # View logs
 docker compose logs -f
 
-# Check Tailscale status (wait 10-15 seconds after startup)
-docker exec tailscale tailscale status
-
-# Get Tailscale IP
-docker exec tailscale tailscale ip -4
+# Check NetBird status (wait 10-15 seconds after startup)
+docker exec netbird netbird status
 ```
 
 Expected output:
 - Container status: Up
-- Tailscale status: Shows your Tailnet and connected devices
-- Tailscale IP: Something like `100.x.x.x`
+- NetBird status: Shows connected peers and your IP
+- NetBird IP: 100.124.76.27
 
 ### 2.5 Test Remote Access
 
-From your laptop (with Tailscale installed and connected):
+From your laptop (with NetBird installed and connected to the same network):
 
 ```bash
-# SSH via Tailscale
-ssh tyler@fart-pi
+# SSH via NetBird hostname
+ssh tyler@fart-pi.johnserv.garrepi.dev
 
 # Or use IP
-ssh tyler@100.x.x.x
+ssh tyler@100.124.76.27
 ```
 
-Success! You can now access the Pi from anywhere.
+Success! You can now access the Pi from anywhere via the Bird Wide Web network.
 
 ## Step 3: Deploy Public Square API
 
@@ -178,37 +177,23 @@ Expected responses: JSON with status and version info.
 
 ### 3.5 Test API Documentation
 
-From your laptop (via Tailscale):
+From your laptop (via NetBird):
 
-Visit: `http://fart-pi:8000/docs`
+Visit: `http://fart-pi.johnserv.garrepi.dev:8000/docs` or `http://100.124.76.27:8000/docs`
 
 You should see the interactive Swagger UI documentation.
 
-## Step 4: Enable Public Access
+## Step 4: Verify NetBird Access
 
-### 4.1 Enable Tailscale Funnel
+### 4.1 Test from NetBird Network
 
-On the Pi:
-```bash
-docker exec tailscale tailscale funnel 8000
-```
+From any device connected to the Bird Wide Web NetBird network:
 
-### 4.2 Get Public URL
+Visit the API URL in a browser:
+- `http://fart-pi.johnserv.garrepi.dev:8000`
+- Or: `http://100.124.76.27:8000`
 
-```bash
-docker exec tailscale tailscale funnel status
-```
-
-Note the public URL. It will be something like:
-```
-https://fart-pi.your-tailnet.ts.net:8000
-```
-
-### 4.3 Test Public Access
-
-From any device (without Tailscale):
-
-Visit the public URL in a browser. You should see:
+You should see:
 ```json
 {
   "name": "Public Square API",
@@ -218,7 +203,14 @@ Visit the public URL in a browser. You should see:
 }
 ```
 
-Success! Your API is publicly accessible.
+### 4.2 Access from Friends' Servers
+
+Your API is now accessible to all peers on the Bird Wide Web network, including:
+- JohnSERV (100.124.56.240)
+- JohnNAS
+- Bebop
+
+Success! Your API is accessible across the mesh network.
 
 ## Step 5: Verification Checklist
 
@@ -228,35 +220,39 @@ On the Pi:
 docker ps
 
 # Should show:
-# - tailscale (Up)
+# - netbird (Up)
 # - public-square-api (Up, healthy)
 ```
 
 Test access methods:
-- [ ] SSH via Tailscale: `ssh tyler@fart-pi`
+- [ ] SSH via NetBird: `ssh tyler@fart-pi.johnserv.garrepi.dev`
 - [ ] API via local network: `http://192.168.1.115:8000`
-- [ ] API via Tailscale: `http://fart-pi:8000`
-- [ ] API via public URL: `https://fart-pi.your-tailnet.ts.net:8000`
-- [ ] API docs accessible: `https://fart-pi.your-tailnet.ts.net:8000/docs`
+- [ ] API via NetBird hostname: `http://fart-pi.johnserv.garrepi.dev:8000`
+- [ ] API via NetBird IP: `http://100.124.76.27:8000`
+- [ ] API docs accessible: `http://fart-pi.johnserv.garrepi.dev:8000/docs`
 
 ## Step 6: Update Frontend
 
-In your frontend code, update the API URL:
+In your frontend code, update the API URL to use NetBird access:
 
 ```javascript
-const API_URL = 'https://fart-pi.your-tailnet.ts.net:8000';
+// For Bird Wide Web network access
+const API_URL = 'http://fart-pi.johnserv.garrepi.dev:8000';
+// Or use IP: 'http://100.124.76.27:8000'
 ```
+
+**Note:** If you need public access (without NetBird), you'll need to set up a reverse proxy with a public domain or use a service like Cloudflare Tunnel.
 
 ## Common Issues
 
-### Tailscale Won't Connect
+### NetBird Won't Connect
 
 ```bash
 # Check logs
-cd ~/house-of-good-things/services/tailscale
+cd ~/house-of-good-things/services/netbird
 docker compose logs
 
-# Verify auth key is correct
+# Verify setup key is correct
 cat .env
 
 # Restart
@@ -275,15 +271,14 @@ docker compose build --no-cache
 docker compose up -d
 ```
 
-### Funnel Not Working
+### Network Access Not Working
 
 ```bash
-# Check Funnel status
-docker exec tailscale tailscale funnel status
+# Check NetBird status
+docker exec netbird netbird status
 
-# Re-enable if needed
-docker exec tailscale tailscale funnel --remove 8000
-docker exec tailscale tailscale funnel 8000
+# Verify peers are connected
+# Check NetBird dashboard at https://app.netbird.io
 ```
 
 ### Port 8000 Already in Use
@@ -300,8 +295,8 @@ sudo netstat -tulpn | grep 8000
 ### View Logs
 
 ```bash
-# Tailscale logs
-cd ~/house-of-good-things/services/tailscale
+# NetBird logs
+cd ~/house-of-good-things/services/netbird
 docker compose logs -f
 
 # Public Square logs
@@ -312,8 +307,8 @@ docker compose logs -f
 ### Restart Services
 
 ```bash
-# Restart Tailscale
-cd ~/house-of-good-things/services/tailscale
+# Restart NetBird
+cd ~/house-of-good-things/services/netbird
 docker compose restart
 
 # Restart Public Square
@@ -335,7 +330,7 @@ docker compose build
 docker compose down
 docker compose up -d
 
-# Tailscale usually doesn't need rebuilding
+# NetBird usually doesn't need rebuilding
 ```
 
 ### Backup Database
@@ -363,7 +358,7 @@ If something goes wrong:
 cd ~/house-of-good-things/services/public-square
 docker compose down
 
-cd ~/house-of-good-things/services/tailscale
+cd ~/house-of-good-things/services/netbird
 docker compose down
 
 # Restart
@@ -377,4 +372,4 @@ docker compose up -d
 - Use strong JWT secret (32+ bytes)
 - Monitor API logs for suspicious activity
 - Keep Docker images updated
-- Review Tailscale admin panel regularly
+- Review NetBird dashboard regularly (https://johnserv.garrepi.dev)

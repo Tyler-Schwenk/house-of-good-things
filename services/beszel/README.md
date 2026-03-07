@@ -23,7 +23,7 @@ docker compose up -d beszel
 
 ### 2. Access Dashboard and Get Agent Key
 
-Via Tailscale (from anywhere):
+Via NetBird (from anywhere):
 ```
 http://100.72.84.128:8090
 ```

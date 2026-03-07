@@ -20,7 +20,7 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 - External SSD for media storage
 
 **What's planned:**
-- Tailscale VPN for remote access
+- NetBird VPN for remote access (self-hosted by John)
 - Immich photo management
 - Monitoring solution
 - Samba file sharing
@@ -89,4 +89,4 @@ docs/
 
 - [Docker Compose Docs](https://docs.docker.com/compose/)
 - [Raspberry Pi Documentation](https://www.raspberrypi.com/documentation/)
-- [Tailscale Documentation](https://tailscale.com/kb/) (for future use)
+- [NetBird Documentation](https://docs.netbird.io/) (for VPN setup)

@@ -1,8 +1,0 @@
-# Environment variables (contains secrets)
-.env
-
-# Tailscale state directory (contains device keys)
-data/
-
-# Logs
-*.log

@@ -15,7 +15,7 @@ Planning document for fart-pi multi-service home server. This will be updated as
 
 **Initial deployment plan (Phase 1):**
 1. **Blog Backend** - FastAPI + SQLite for personal blog/forum
-2. **Tailscale** - VPN for secure remote access
+2. **NetBird** - VPN for secure remote access (Bird Wide Web - self-hosted by John)
 
 **Later additions (Phase 2+):**
 - Immich (photo management)
@@ -40,17 +40,18 @@ Planning document for fart-pi multi-service home server. This will be updated as
   - User auth (email/password + OAuth)
   - Posts, comments, threads
   - Frontend: GitHub Pages (already deployed)
-  - Exposed publicly via Tailscale Funnel
+  - Accessible via NetBird network
   - Port: 8000
   - **Why first**: Core personal project, drives need for other services
 
 **Infrastructure**
-- **Tailscale** 🚧 - Secure remote access
-  - VPN mesh network
+- **NetBird** 🚧 - Secure remote access (Bird Wide Web)
+  - WireGuard-based VPN mesh network
   - No port forwarding needed
-  - Enable Funnel to expose blog API publicly
   - Access all services remotely
-  - **Why first**: Required for remote development and Funnel feature
+  - Peer-to-peer connectivity with friends' servers
+  - Self-hosted management by John = unlimited users/peers
+  - **Why first**: Required for remote development and Bird Wide Web connectivity
 
 ### Phase 2+: Future Services
 
@@ -58,7 +59,7 @@ Planning document for fart-pi multi-service home server. This will be updated as
 - **Navidrome** ✅ - Music streaming (Subsonic API compatible)
   - Already deployed
   - Port: 4533
-  - Will be accessible via Tailscale once deployed
+  - Will be accessible via NetBird once deployed
   
 - **Immich** 📋 - Photo management with mobile backup
   - Self-hosted Google Photos alternative
@@ -78,14 +79,14 @@ Planning document for fart-pi multi-service home server. This will be updated as
   - SMB/CIFS for Windows/Mac/Linux
   - Access Pi files from any local device
   - Port: 445
-  - Local network only (not via Tailscale)
+  - Local network only
 
 **Backups**
 - **Off-site backup** 📋 - To parents' house
   - Automated encrypted backups
   - Tool: Probably Restic
   - Target: Another Raspberry Pi
-  - Connected via Tailscale
+  - Connected via NetBird
 
 Legend: ✅ Deployed | 🚧 Next Up | 📋 Future
 
@@ -112,7 +113,7 @@ Planned directories:
 ├── services/                         # Service configs
 │   ├── navidrome/                   # ✅ Exists
 │   ├── immich/                      # 📋 To create
-│   ├── tailscale/                   # 📋 To create
+│   ├── netbird/                     # 📋 To create
 │   └── ...
 ├── docs/                            # Documentation
 └── scripts/                         # Automation scripts
@@ -136,7 +137,7 @@ Each service directory contains:
 Raspberry Pi OS (Host)
 ├── Docker Engine
 │   ├── Navidrome container ✅
-│   ├── Tailscale container 📋
+│   ├── NetBird container 📋
 │   ├── Immich containers 📋
 │   ├── Monitoring container 📋
 │   └── Samba container 📋
@@ -161,34 +162,35 @@ Your PC/Phone (on WiFi) → 192.168.1.115:4533 → Navidrome
 - Direct access when on home network
 - Fast (local speeds)
 
-### Remote Access (via Tailscale - Planned)
+### Remote Access (via NetBird)
 ```
-Your Phone (anywhere) → Tailscale VPN → fart-pi:4533 → Navidrome
+Your Phone (anywhere) → NetBird VPN → fart-pi:4533 → Navidrome
 ```
 - Peer-to-peer encrypted connection
 - No port forwarding needed
-- Access via: `http://fart-pi:4533`
+- Access via: `http://fart-pi.johnserv.garrepi.dev:4533` or `http://100.124.76.27:4533`
 
-**Tailscale Benefits:**
+**NetBird Benefits:**
 - No open ports on home router
-- End-to-end encrypted
+- End-to-end encrypted (WireGuard)
 - Works from anywhere
 - Automatic local network optimization
+- Part of Bird Wide Web collaborative network
 
 ### Service Port Plan
 
 | Service | Port | Local Access | Remote Access |
 |---------|------|--------------|---------------|
-| Navidrome | 4533 | ✅ | 📋 (via Tailscale) |
-| Immich | 2283 | 📋 | 📋 (via Tailscale) |
-| Monitoring | 8090 | 📋 | 📋 (via Tailscale) |
+| Navidrome | 4533 | ✅ | 📋 (via NetBird) |
+| Immich | 2283 | 📋 | 📋 (via NetBird) |
+| Monitoring | 8090 | 📋 | 📋 (via NetBird) |
 | Samba | 445 | 📋 | ❌ (local only) |
-| Blog Backend | 3000 | 📋 | 📋 (via Tailscale) |
+| Blog Backend | 3000 | 📋 | 📋 (via NetBird) |
 
 ## Security Approach
 
 **Remote Access:**
-- All remote access via Tailscale VPN
+- All remote access via NetBird VPN
 - No ports exposed to internet
 - No router port forwarding
 
@@ -255,7 +257,7 @@ Probably Restic:
    - SQLite database
 3. Create Dockerfile and docker-compose.yml
 4. Test locally, then deploy to Pi
-5. Enable Tailscale Funnel to expose publicly
+5. Access via NetBird network
 6. Connect GitHub Pages frontend to API
 
 **Step 3: Verify & Document**
@@ -284,15 +286,15 @@ Probably Restic:
 - [x] Tech stack? **→ FastAPI (Python) - open source, well-documented, AI-friendly**
 - [x] Database choice? **→ SQLite - simpler, lighter, perfect for personal blog**
 - [x] Auth strategy? **→ FastAPI-Users library (email/password + OAuth)**
-- [x] Public access method? **→ Tailscale Funnel - free HTTPS, no port forwarding**
+- [x] Network access? **→ NetBird - part of Bird Wide Web**
 - [ ] Frontend-backend communication details?
 - [ ] Rate limiting to prevent spam?
 - [ ] Moderation features needed?
 
-### Phase 1: Tailscale
-- [ ] Personal vs team account? (Free personal likely sufficient)
-- [x] Enable MagicDNS? **→ Yes - allows ssh tyler@fart-pi**
-- [x] Funnel for blog API? **→ Yes - expose port 8000 publicly**
+### Phase 1: NetBird
+- [x] Network choice? **→ NetBird - 5 users (vs Tailscale 3)**
+- [x] Bird Wide Web? **→ Yes - collaborative with friends**
+- [x] Enable DNS? **→ Yes**
 - [ ] Subnet router mode needed?
 
 ### Phase 2+: Storage
@@ -318,9 +320,9 @@ Probably Restic:
 ## Key Learning Points
 
 ### From Network Discussion
-- **Tailscale routing**: Direct peer-to-peer, not through external servers
-- **Local optimization**: When on same WiFi, stays local
-- **DERP relays**: Only used as fallback when direct connection fails
+- **NetBird routing**: WireGuard-based peer-to-peer
+- **Local optimization**: Stays local when on same network
+- **Relay servers**: Fallback for NAT traversal
 - **Coordination servers**: Only for initial handshake, not data transfer
 
 ### From Docker Discussion
@@ -331,8 +333,8 @@ Probably Restic:
 
 ### From Architecture Discussion
 - **Orchestration**: Docker Compose reads configs and manages containers
-- **No special container**: Tailscale is a container like any other
-- **Network paths**: Local traffic stays local, remote goes through Tailscale
+- **No special container**: NetBird is a container like any other
+- **Network paths**: Local traffic stays local, remote goes through NetBird
 
 ## Design Principles
 
@@ -346,7 +348,7 @@ Probably Restic:
 ## Resources
 
 - [Docker Compose Docs](https://docs.docker.com/compose/)
-- [Tailscale Documentation](https://tailscale.com/kb/)
+- [NetBird Documentation](https://docs.netbird.io/)
 - [Raspberry Pi Docs](https://www.raspberrypi.com/documentation/)
 
 ---

@@ -4,22 +4,19 @@ Before deploying services to fart-pi, complete these prerequisites.
 
 ## Required Accounts
 
-### 1. Tailscale Account (FREE)
+### 1. NetBird Account (FREE)
 
-**Why:** Provides VPN access and Funnel feature for public API exposure.
+**Why:** Provides VPN access for the Bird Wide Web collaborative network.
 
 **Steps:**
-1. Visit https://login.tailscale.com
-2. Sign up with Google, Microsoft, or GitHub account
-3. Free tier includes:
-   - Up to 100 devices
-   - 3 users
-   - Unlimited Funnel usage
-   - All features needed for this project
+1. Visit John's self-hosted NetBird dashboard: **https://johnserv.garrepi.dev**
+2. Sign up (John can invite you or you can create an account)
+3. Self-hosted instance = unlimited users and peers!
 
 **After signup:**
-- Keep the browser tab open (you'll need it for auth key)
-- No payment required
+- Access dashboard at https://johnserv.garrepi.dev
+- You'll need to generate a setup key for the Pi
+- No payment required (John hosts it)
 
 ### 2. Git Repository (Optional but Recommended)
 
@@ -47,20 +44,20 @@ Before deploying services to fart-pi, complete these prerequisites.
 - Be on the same WiFi/network as the Pi
 - SSH directly: `ssh tyler@192.168.1.115` or `ssh tyler@192.168.1.116`
 
-**Option B: Raspberry Pi Connect (Remote)**
-- If Pi Connect is configured on the Pi, use it to access the Pi shell remotely
-- Deploy Tailscale through Pi Connect session
-- After Tailscale is running, switch to Tailscale SSH
+**Option B: Remote Access Tool**
+- If Raspberry Pi Connect or another remote access tool is configured, use it
+- Deploy NetBird through remote session
+- After NetBird is running, switch to NetBird SSH
 
 **Option C: Physical Access**
 - Connect keyboard/monitor to the Pi
-- Deploy Tailscale directly on the Pi
-- After Tailscale is running, disconnect peripherals and access remotely
+- Deploy NetBird directly on the Pi
+- After NetBird is running, disconnect peripherals and access remotely
 
-**After Tailscale is deployed:** You can SSH from anywhere (coffee shops, travel, etc.) via Tailscale:
+**After NetBird is deployed:** You can SSH from anywhere (coffee shops, travel, etc.) via NetBird:
 ```bash
-ssh tyler@fart-pi        # Tailscale hostname
-ssh tyler@100.x.x.x      # Tailscale IP
+ssh tyler@fart-pi.johnserv.garrepi.dev   # NetBird hostname
+ssh tyler@100.124.76.27                  # NetBird IP
 ```
 
 ### 2. SSH Access Verification
@@ -161,7 +158,7 @@ scp services/public-square/app/main.py tyler@192.168.1.115:~/house-of-good-thing
 
 ## Pre-Deployment Steps Summary
 
-1. [ ] Create Tailscale account
+1. [ ] Create NetBird account
 2. [ ] Decide: GitHub or direct copy?
 3. [ ] If GitHub: Create repo and push code
 4. [ ] SSH into Pi and verify Docker is installed
@@ -184,17 +181,18 @@ ls -la services/
 
 # Should see:
 # - navidrome/
+# - netbird/
 # - public-square/
-# - tailscale/
 ```
 
 ## What Happens During Deployment
 
-1. **Tailscale Deployment (~5 minutes)**
+1. **NetBird Deployment (~5 minutes)**
+   - Generate setup key from NetBird dashboard
    - Configure environment variables (.env file)
    - Run `docker compose up -d`
    - Verify connection
-   - Test SSH via Tailscale hostname
+   - Test SSH via NetBird hostname
 
 2. **Public Square Deployment (~10 minutes)**
    - Generate JWT secret
@@ -202,7 +200,7 @@ ls -la services/
    - Build Docker image (first time: 3-5 minutes)
    - Run `docker compose up -d`
    - Verify API responds
-   - Enable Tailscale Funnel for public access
+   - Test from within NetBird network
    - Test from frontend
 
 ## Next Document
