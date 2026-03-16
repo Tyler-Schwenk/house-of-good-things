@@ -34,7 +34,7 @@ Planning document for fart-pi multi-service home server. This will be updated as
 ### Phase 1: Initial Deployment (PRIORITY)
 
 **Custom Applications**
-- **Blog Backend** 🚧 - Personal blog/public square forum
+- **Blog Backend** (Next Up) - Personal blog/public square forum
   - FastAPI (Python)
   - SQLite database
   - User auth (email/password + OAuth)
@@ -45,7 +45,7 @@ Planning document for fart-pi multi-service home server. This will be updated as
   - **Why first**: Core personal project, drives need for other services
 
 **Infrastructure**
-- **NetBird** 🚧 - Secure remote access (Bird Wide Web)
+- **NetBird** (Next Up) - Secure remote access (Bird Wide Web)
   - WireGuard-based VPN mesh network
   - No port forwarding needed
   - Access all services remotely
@@ -56,39 +56,39 @@ Planning document for fart-pi multi-service home server. This will be updated as
 ### Phase 2+: Future Services
 
 **Media Services**
-- **Navidrome** ✅ - Music streaming (Subsonic API compatible)
+- **Navidrome** (Deployed) - Music streaming (Subsonic API compatible)
   - Already deployed
   - Port: 4533
   - Will be accessible via NetBird once deployed
   
-- **Immich** 📋 - Photo management with mobile backup
+- **Immich** (Future) - Photo management with mobile backup
   - Self-hosted Google Photos alternative
   - Automatic phone photo backup
   - Machine learning for faces/objects
   - Port: 2283
 
 **Monitoring**
-- **Beszel** 📋 - System health tracking
+- **Beszel** (Future) - System health tracking
   - Lightweight monitoring
   - Track CPU, RAM, disk, temperature
   - Alert on issues
   - Port: 8090
 
 **File Sharing**
-- **Samba** 📋 - Local network file sharing
+- **Samba** (Future) - Local network file sharing
   - SMB/CIFS for Windows/Mac/Linux
   - Access Pi files from any local device
   - Port: 445
   - Local network only
 
 **Backups**
-- **Off-site backup** 📋 - To parents' house
+- **Off-site backup** (Future) - To parents' house
   - Automated encrypted backups
   - Tool: Probably Restic
   - Target: Another Raspberry Pi
   - Connected via NetBird
 
-Legend: ✅ Deployed | 🚧 Next Up | 📋 Future
+Legend: (Deployed) | (Next Up) | (Future)
 
 ## Storage Architecture
 
@@ -113,9 +113,9 @@ Planned directories:
 ```
 /home/tyler/house-of-good-things/    # This repo
 ├── services/                         # Service configs
-│   ├── navidrome/                   # ✅ Exists
-│   ├── immich/                      # 📋 To create
-│   ├── netbird/                     # 📋 To create
+│   ├── navidrome/                   # Exists
+│   ├── immich/                      # To create
+│   ├── netbird/                     # To create
 │   └── ...
 ├── docs/                            # Documentation
 └── scripts/                         # Automation scripts
@@ -138,11 +138,11 @@ Each service directory contains:
 ```
 Raspberry Pi OS (Host)
 ├── Docker Engine
-│   ├── Navidrome container ✅
-│   ├── NetBird container 📋
-│   ├── Immich containers 📋
-│   ├── Monitoring container 📋
-│   └── Samba container 📋
+│   ├── Navidrome container (deployed)
+│   ├── NetBird container (planned)
+│   ├── Immich containers (planned)
+│   ├── Monitoring container (planned)
+│   └── Samba container (planned)
 └── house-of-good-things/ (This repo - config files)
 ```
 
@@ -183,11 +183,11 @@ Your Phone (anywhere) → NetBird VPN → fart-pi:4533 → Navidrome
 
 | Service | Port | Local Access | Remote Access |
 |---------|------|--------------|---------------|
-| Navidrome | 4533 | ✅ | 📋 (via NetBird) |
-| Immich | 2283 | 📋 | 📋 (via NetBird) |
-| Monitoring | 8090 | 📋 | 📋 (via NetBird) |
-| Samba | 445 | 📋 | ❌ (local only) |
-| Blog Backend | 3000 | 📋 | 📋 (via NetBird) |
+| Navidrome | 4533 | Yes | Planned (via NetBird) |
+| Immich | 2283 | Planned | Planned (via NetBird) |
+| Monitoring | 8090 | Planned | Planned (via NetBird) |
+| Samba | 445 | Planned | No (local only) |
+| Blog Backend | 3000 | Planned | Planned (via NetBird) |
 
 ## Security Approach
 
