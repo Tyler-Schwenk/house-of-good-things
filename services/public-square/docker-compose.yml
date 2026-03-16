@@ -15,7 +15,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./app:/app/app
-      - /mnt/external-ssd/public-gallery:/app/photos
+      - /media/tyler/FE645A9A645A558D/public-gallery:/app/photos
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]

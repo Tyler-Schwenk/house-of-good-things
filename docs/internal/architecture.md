@@ -92,17 +92,19 @@ Legend: ✅ Deployed | 🚧 Next Up | 📋 Future
 
 ## Storage Architecture
 
-### External SSD (`/mnt/external-ssd/`)
+### External SSD (`/media/tyler/FE645A9A645A558D/`)
 **Purpose**: Store large media files
+
+**Device**: `/dev/sda1` - 193GB NTFS partition
 
 Planned directories:
 ```
-/mnt/external-ssd/
+/media/tyler/FE645A9A645A558D/
 ├── music/          # Music library (Navidrome)
 ├── photos/         # Photo library (Immich)
-├── files/          # General file storage (Samba)
-├── blog-data/      # Blog posts and content
-└── backups/        # Local backup staging
+├── public-gallery/ # Curated photos for website (Public Square API)
+├── movies/         # Movie collection
+└── files/          # General file storage (Samba)
 ```
 
 ### Internal Storage (SD Card/NVMe)
@@ -149,8 +151,8 @@ Raspberry Pi OS (Host)
 services:
   navidrome:
     volumes:
-      - /mnt/external-ssd/music:/music:ro    # Maps SSD to container
-      - ./data:/data                          # Service database
+      - /media/tyler/FE645A9A645A558D/music:/music:ro    # Maps SSD to container
+      - ./data:/data                                      # Service database
 ```
 
 ## Network Architecture

@@ -135,7 +135,7 @@ Or use NetBird for private access only (already configured).
 
 ### Storage Structure
 ```
-/mnt/external-ssd/public-gallery/
+/media/tyler/FE645A9A645A558D/public-gallery/
 ├── gallery_1/
 │   ├── abc123.jpg          # Original image
 │   ├── def456.png

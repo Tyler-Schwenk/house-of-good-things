@@ -121,26 +121,27 @@ Planning document for fart-pi multi-service home server. This will be updated as
   - Tool: Probably Restic
   - Target: Another Raspberry Pi
   - Connected via NetBird
+
+Legend: ✅ Deployed | 🚧 Next Up | 📋 Future
+
+## Storage Architecture
+
+### External SSD (`/media/tyler/FE645A9A645A558D/`)
+**Purpose**: Store large media files
+
+**Device**: `/dev/sda1` - 193GB NTFS partition (1% used, 193GB available)
+
 Directories:
 ```
-/mnt/external-ssd/
+/media/tyler/FE645A9A645A558D/
 ├── music/              # Music library (Navidrome)
-├── photos/             # Photo library (Immich - planned)
+├── photos/             # Personal photo library (Immich - planned)
 ├── public-gallery/     # Curated photos for website (Public Square API)
 │   ├── gallery_1/
 │   │   ├── *.jpg       # Original images
 │   │   └── thumbnails/ # Auto-generated thumbnails (400x400px)
 │   └── gallery_2/
-├── files/              # General file storage (Samba - planned)
-└── backups/    
-Planned directories:
-```
-/mnt/external-ssd/
-├── music/          # Music library (Navidrome)
-├── photos/         # Photo library (Immich)
-├── files/          # General file storage (Samba)
-├── blog-data/      # Blog posts and content
-└── backups/        # Local backup staging
+└── movies/             # Movie collection
 ```
 
 ### Internal Storage (SD Card/NVMe)
