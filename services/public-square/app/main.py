@@ -89,7 +89,13 @@ async def root():
     }
 
 
-# TODO: Include routers for auth, posts, and comments
+# Include routers
+from app.routers import gallery
+
+app.include_router(gallery.router)
+
+
+# TODO: Include additional routers for auth, posts, and comments
 # from app.routers import auth, posts, comments
 # app.include_router(auth.router)
 # app.include_router(posts.router)

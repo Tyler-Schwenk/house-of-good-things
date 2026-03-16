@@ -1,14 +1,15 @@
 # Public Square API
 
-Forum API for posts, comments, and discussions with user authentication.
+Forum and gallery API for posts, comments, discussions, and photo management with user authentication.
 
 ## Overview
 
-Public Square is a RESTful API backend for a public forum/blog platform. It provides:
+Public Square is a RESTful API backend for a public forum and photo gallery platform. It provides:
 
 - User registration and authentication (JWT)
-- Posts (threads/articles)
-- Comments on posts
+- Forum posts (threads/articles) and comments
+- Photo galleries with automatic thumbnail generation
+- Image storage and serving
 - Rate limiting to prevent abuse
 - SQLite database (lightweight, file-based)
 
@@ -21,6 +22,34 @@ Public Square is a RESTful API backend for a public forum/blog platform. It prov
 - **Pydantic**: Data validation
 - **SlowAPI**: Rate limiting
 - **JWT**: Token-based authentication
+- **Pillow**: Image processing and thumbnail generation
+
+## Database Schema
+
+### Users
+- Authentication and profile information
+- Email, username, verification status
+- Relationships to posts and comments
+
+### Posts
+- Forum threads/articles
+- Title, content, publish status
+- Author relationship, timestamps
+
+### Comments
+- Replies to posts
+- Content, author, timestamps
+
+### Galleries
+- Photo album collections
+- Name, description, URL slug, visibility
+- Relationships to photos
+
+### GalleryPhotos
+- Individual photos within galleries
+- File paths, thumbnails, dimensions
+- Title, description, display order
+- Automatic metadata extraction
 
 ## Prerequisites
 
@@ -47,7 +76,9 @@ JWT_SECRET=<your-generated-secret>
 CORS_ORIGINS=https://yourusername.github.io
 ```
 
-### Step 2: Build and Deploy
+Note: UpdateCreate Storage Directory
+
+### Step 3: Build and Deploy
 
 ```bash
 # Build the Docker image
@@ -60,7 +91,16 @@ docker compose up -d
 docker compose logs -f
 ```
 
-### Step 3: Verify Deployment
+### Step 4ectory on external SSD for photo storage:
+
+```bash
+sudo mkdir -p /mnt/external-ssd/public-gallery
+sudo chown tyler:tyler /mnt/external-ssd/public-gallery
+```
+
+### Step 2: Build and Deploy
+
+```bash4: Verify Deployment
 
 ```bash
 # Check service health
@@ -70,6 +110,91 @@ curl http://localhost:8000/health
 # Visit: http://localhost:8000/docs
 ```
 
+### Step 5: Set Up Public Access
+
+For public internet access, set up Cloudflare Tunnel:
+- See: `docs/services/cloudflare-tunnel.md`
+- Provides free SSL and public URL
+- No port forwarding required
+
+Or use NetBird for private access only (already configured).
+
+## Photo Gallery Features
+
+### Automatic Thumbnail Generation
+- Thumbnails created automatically on upload
+- Max dimensions: 400x400 pixels (configurable in config.py)
+- Maintains aspect ratio
+- Optimized quality: 85%
+
+### Image Metadata Extraction
+- Width and height automatically detected
+- File size stored
+- MIME type validation
+- Original filename preserved
+
+### Storage Structure
+```
+/mnt/external-ssd/public-gallery/
+├── gallery_1/
+│   ├── abc123.jpg          # Original image
+│   ├── def456.png
+│   └── thumbnails/
+│       ├── abc123.jpg      # Thumbnail
+│       └── def456.png
+└── gallery_2/
+    └── ...
+```
+
+### Gallery Management
+- Create multiple galleries with URL-friendly slugs
+- Set galleries as public or private
+- Reorder photos with display_order
+- Add titles and descriptions to photos
+- Delete galleries cascade deletes all photos
+
+## API Usage Examples
+
+### Create a Gallery
+
+```bash
+curl -X POST http://localhost:8000/galleries \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Summer 2026",
+    "description": "Photos from summer vacation",
+    "slug": "summer-2026",
+    "is_public": true
+  }'
+```
+
+### Upload a Photo
+
+```bash
+curl -X POST http://localhost:8000/galleries/1/photos \
+  -F "file=@photo.jpg" \
+  -F "title=Beach Sunset" \
+  -F "description=Beautiful sunset at the beach" \
+  -F "display_order=0"
+```
+
+### Get Gallery with Photos
+
+```bash
+curl http://localhost:8000/galleries/slug/summer-2026
+```
+
+### Display Photo in HTML
+
+```html
+<!-- Thumbnail -->
+<img src="https://api.yoursite.com/galleries/photos/1/file?thumbnail=true">
+
+<!-- Full size -->
+<img src="https://api.yoursite.com/galleries/photos/1/file">
+```
+
+## Development
 ### Step 4: Expose Publicly (Optional)
 
 Use Tailscale Funnel to make the API publicly accessible:
@@ -90,6 +215,20 @@ docker exec tailscale tailscale funnel 8000
 - `GET /docs` - Interactive API documentation (Swagger UI)
 - `GET /redoc` - Alternative API documentation (ReDoc)
 
+### Galleries (Implemented)
+- `GET /galleries` - List all galleries
+- `GET /galleries/{id}` - Get gallery by ID with all photos
+- `GET /galleries/slug/{slug}` - Get gallery by URL slug
+- `POST /galleries` - Create new gallery
+- `PATCH /galleries/{id}` - Update gallery
+- `DELETE /galleries/{id}` - Delete gallery and all photos
+- `POST /galleries/{id}/photos` - Upload photo to gallery
+- `GET /galleries/{id}/photos` - List photos in gallery
+- `GET /galleries/photos/{id}` - Get photo metadata
+- `GET /galleries/photos/{id}/file` - Get photo file (original or thumbnail)
+- `PATCH /galleries/photos/{id}` - Update photo metadata
+- `DELETE /galleries/photos/{id}` - Delete photo
+
 ### Authentication (TODO: Implement routers)
 - `POST /auth/register` - Register new user
 - `POST /auth/login` - Login and get JWT token
@@ -98,6 +237,16 @@ docker exec tailscale tailscale funnel 8000
 
 ### Posts (TODO: Implement routers)
 - `GET /posts` - List all posts (public)
+- `GET /posts/{id}` - Get single post
+- `POST /posts` - Create post (authenticated)
+- `PUT /posts/{id}` - Update post (authenticated, must be author)
+- `DELETE /posts/{id}` - Delete post (authenticated, must be author)
+
+### Comments (TODO: Implement routers)
+- `GET /posts/{id}/comments` - List comments for a post
+- `POST /posts/{id}/comments` - Add comment (authenticated)
+- `PUT /comments/{id}` - Update comment (authenticated, must be author)
+- `DELETE /comments/{id}` - Delete comment (authenticated, must be author)
 - `POST /posts` - Create new post (authenticated)
 - `GET /posts/{id}` - Get single post (public)
 - `PUT /posts/{id}` - Update post (author only)

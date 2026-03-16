@@ -1,7 +1,7 @@
 """
 SQLAlchemy database models.
 
-Defines database schema for users, posts, and comments.
+Defines database schema for users, posts, comments, galleries, and photos.
 """
 
 from sqlalchemy import Boolean, Column, Integer, String, Text, DateTime, ForeignKey
@@ -87,3 +87,69 @@ class Comment(Base):
     # Relationships
     post = relationship("Post", back_populates="comments")
     author = relationship("User", back_populates="comments")
+
+
+class Gallery(Base):
+    """
+    Gallery model representing a photo album or collection.
+    
+    Attributes:
+        id: Unique identifier
+        name: Gallery name
+        description: Gallery description
+        slug: URL-friendly identifier
+        is_public: Whether gallery is visible to public
+        created_at: Timestamp of creation
+        updated_at: Timestamp of last update
+    """
+    __tablename__ = "galleries"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False, index=True)
+    description = Column(Text, nullable=True)
+    slug = Column(String(200), unique=True, nullable=False, index=True)
+    is_public = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Relationships
+    photos = relationship("GalleryPhoto", back_populates="gallery", cascade="all, delete-orphan")
+
+
+class GalleryPhoto(Base):
+    """
+    GalleryPhoto model representing a photo within a gallery.
+    
+    Attributes:
+        id: Unique identifier
+        gallery_id: Foreign key to Gallery
+        filename: Original uploaded filename
+        file_path: Path to stored file on disk
+        thumbnail_path: Path to thumbnail file
+        title: Photo title
+        description: Photo description
+        width: Image width in pixels
+        height: Image height in pixels
+        file_size: File size in bytes
+        mime_type: File MIME type
+        display_order: Order of photo in gallery
+        created_at: Timestamp of upload
+    """
+    __tablename__ = "gallery_photos"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    gallery_id = Column(Integer, ForeignKey("galleries.id"), nullable=False)
+    filename = Column(String(255), nullable=False)
+    file_path = Column(String(500), nullable=False)
+    thumbnail_path = Column(String(500), nullable=True)
+    title = Column(String(200), nullable=True)
+    description = Column(Text, nullable=True)
+    width = Column(Integer, nullable=True)
+    height = Column(Integer, nullable=True)
+    file_size = Column(Integer, nullable=True)
+    mime_type = Column(String(100), nullable=True)
+    display_order = Column(Integer, default=0, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    
+    # Relationships
+    gallery = relationship("Gallery", back_populates="photos")

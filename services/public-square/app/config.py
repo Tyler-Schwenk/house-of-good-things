@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: str = ""
     
+    # Photo Storage
+    PHOTOS_DIR: str = "/app/photos"
+    THUMBNAIL_MAX_WIDTH: int = 400
+    THUMBNAIL_MAX_HEIGHT: int = 400
+    THUMBNAIL_QUALITY: int = 85
+    
     # API Metadata
     API_TITLE: str = "Public Square API"
     API_VERSION: str = "1.0.0"

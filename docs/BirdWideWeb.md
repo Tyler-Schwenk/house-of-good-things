@@ -1,6 +1,14 @@
-# Homelab
+# Bird Wide Web
 
-Overview of machines and services in the lab.
+A secure network of self hosted servers, connected via NetBird
+
+## Main nodes withing Bird Wide Web
+
+Tyler - 'House of Good things' ip, runs on 'fart-pi' (raspberry pi 5). main programs include: music hosting via navidrome (called 'the virtual opium den'), backend for a forum (called public square) that is held on his personal website (https://tyler-schwenk.github.io/). also running beszel and netbird
+
+John - 'JohnHOME' ip, runs JohnNAS and JohnSERV (please fill in these details, john). main programs include: hosting the NetBird Overlay Network, minecraft server, Jellyfin movie streamer.
+
+Kyle - 'Beer Home', runs on Orin AGX, hosts ML based services including 'Mattbot'.
 
 ---
 

@@ -344,6 +344,268 @@ Authorization: Bearer <your-token>
 
 **Response:** `403 Forbidden` if not the author
 
+## Galleries
+
+Photo galleries for displaying curated images on the website.
+
+### List Galleries
+
+Get all galleries.
+
+**Endpoint:** `GET /galleries`
+
+**Query Parameters:**
+- `skip` (integer, default: 0): Number of galleries to skip (pagination)
+- `limit` (integer, default: 100): Maximum galleries to return
+- `public_only` (boolean, default: true): Only show public galleries
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "Summer 2026",
+    "description": "Photos from summer vacation",
+    "slug": "summer-2026",
+    "is_public": true,
+    "created_at": "2026-03-15T10:00:00Z",
+    "updated_at": null,
+    "photo_count": 12
+  }
+]
+```
+
+### Get Gallery by ID
+
+Get a specific gallery with all photos.
+
+**Endpoint:** `GET /galleries/{gallery_id}`
+
+**Response:** `200 OK`
+```json
+{
+  "id": 1,
+  "name": "Summer 2026",
+  "description": "Photos from summer vacation",
+  "slug": "summer-2026",
+  "is_public": true,
+  "created_at": "2026-03-15T10:00:00Z",
+  "updated_at": null,
+  "photos": [
+    {
+      "id": 1,
+      "gallery_id": 1,
+      "filename": "beach.jpg",
+      "file_path": "gallery_1/abc-123.jpg",
+      "thumbnail_path": "gallery_1/thumbnails/abc-123.jpg",
+      "title": "Beach Day",
+      "description": "Sunset at the beach",
+      "width": 3000,
+      "height": 2000,
+      "file_size": 1245678,
+      "mime_type": "image/jpeg",
+      "display_order": 0,
+      "created_at": "2026-03-15T10:30:00Z"
+    }
+  ]
+}
+```
+
+**Response:** `404 Not Found` if gallery doesn't exist
+
+### Get Gallery by Slug
+
+Get a gallery by URL-friendly slug.
+
+**Endpoint:** `GET /galleries/slug/{slug}`
+
+**Example:** `GET /galleries/slug/summer-2026`
+
+**Response:** Same as Get Gallery by ID
+
+### Create Gallery
+
+Create a new photo gallery.
+
+**Endpoint:** `POST /galleries`
+
+**Request Body:**
+```json
+{
+  "name": "Summer 2026",
+  "description": "Photos from summer vacation",
+  "slug": "summer-2026",
+  "is_public": true
+}
+```
+
+**Validation:**
+- `name`: 1-200 characters, required
+- `description`: 0-5,000 characters, optional
+- `slug`: 1-200 characters, required, unique, URL-friendly
+- `is_public`: boolean (default: true)
+
+**Response:** `201 Created`
+```json
+{
+  "id": 1,
+  "name": "Summer 2026",
+  "description": "Photos from summer vacation",
+  "slug": "summer-2026",
+  "is_public": true,
+  "created_at": "2026-03-15T10:00:00Z",
+  "updated_at": null
+}
+```
+
+### Update Gallery
+
+Update gallery metadata.
+
+**Endpoint:** `PATCH /galleries/{gallery_id}`
+
+**Request Body:** (all fields optional)
+```json
+{
+  "name": "Summer 2026 Updated",
+  "description": "New description",
+  "is_public": false
+}
+```
+
+**Response:** `200 OK` (same structure as Create Gallery)
+
+### Delete Gallery
+
+Delete a gallery and all its photos (files and database records).
+
+**Endpoint:** `DELETE /galleries/{gallery_id}`
+
+**Response:** `204 No Content`
+
+### Upload Photo
+
+Upload a photo to a gallery.
+
+**Endpoint:** `POST /galleries/{gallery_id}/photos`
+
+**Content-Type:** `multipart/form-data`
+
+**Form Fields:**
+- `file` (file, required): Image file to upload
+- `title` (string, optional): Photo title (max 200 chars)
+- `description` (string, optional): Photo description (max 5,000 chars)
+- `display_order` (integer, default: 0): Display order in gallery
+
+**Example with curl:**
+```bash
+curl -X POST "https://api.yoursite.com/galleries/1/photos" \
+  -F "file=@/path/to/photo.jpg" \
+  -F "title=Beach Sunset" \
+  -F "description=Beautiful sunset"
+```
+
+**Example with JavaScript:**
+```javascript
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('title', 'Beach Sunset');
+formData.append('description', 'Beautiful sunset');
+
+const response = await fetch(`${API_URL}/galleries/1/photos`, {
+  method: 'POST',
+  body: formData
+});
+```
+
+**Response:** `201 Created`
+```json
+{
+  "id": 1,
+  "gallery_id": 1,
+  "filename": "beach.jpg",
+  "file_path": "gallery_1/abc-123.jpg",
+  "thumbnail_path": "gallery_1/thumbnails/abc-123.jpg",
+  "title": "Beach Sunset",
+  "description": "Beautiful sunset at the beach",
+  "width": 3000,
+  "height": 2000,
+  "file_size": 1245678,
+  "mime_type": "image/jpeg",
+  "display_order": 0,
+  "created_at": "2026-03-15T10:30:00Z"
+}
+```
+
+**Response:** `400 Bad Request` if file is not an image
+
+### List Gallery Photos
+
+Get all photos in a gallery.
+
+**Endpoint:** `GET /galleries/{gallery_id}/photos`
+
+**Response:** `200 OK` - Array of photo objects (ordered by display_order, then created_at)
+
+### Get Photo Metadata
+
+Get information about a specific photo (not the file itself).
+
+**Endpoint:** `GET /galleries/photos/{photo_id}`
+
+**Response:** `200 OK` - Photo object
+
+### Get Photo File
+
+Get the actual image file.
+
+**Endpoint:** `GET /galleries/photos/{photo_id}/file`
+
+**Query Parameters:**
+- `thumbnail` (boolean, default: false): If true, returns thumbnail instead of original
+
+**Response:** Image file with appropriate `Content-Type`
+
+**Usage in HTML:**
+```html
+<!-- Full size image -->
+<img src="https://api.yoursite.com/galleries/photos/1/file" alt="Photo">
+
+<!-- Thumbnail -->
+<img src="https://api.yoursite.com/galleries/photos/1/file?thumbnail=true" alt="Thumb">
+```
+
+**Thumbnails:**
+- Automatically generated on upload
+- Max dimensions: 400x400 pixels
+- Maintains aspect ratio
+- Optimized for web display
+
+### Update Photo Metadata
+
+Update photo title, description, or display order.
+
+**Endpoint:** `PATCH /galleries/photos/{photo_id}`
+
+**Request Body:** (all fields optional)
+```json
+{
+  "title": "Updated Title",
+  "description": "Updated description",
+  "display_order": 5
+}
+```
+
+**Response:** `200 OK` - Updated photo object
+
+### Delete Photo
+
+Delete a photo (file and database record).
+
+**Endpoint:** `DELETE /galleries/photos/{photo_id}`
+
+**Response:** `204 No Content`
+
 ## System Endpoints
 
 ### Health Check
@@ -560,6 +822,109 @@ async function addComment(postId, content) {
   
   return await response.json();
 }
+```
+
+### Get Galleries
+
+```javascript
+async function getGalleries() {
+  const response = await fetch(`${API_URL}/galleries`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch galleries');
+  }
+  
+  return await response.json();
+}
+```
+
+### Get Gallery by Slug
+
+```javascript
+async function getGallery(slug) {
+  const response = await fetch(`${API_URL}/galleries/slug/${slug}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch gallery');
+  }
+  
+  return await response.json();
+}
+
+// Example: Display gallery with React
+function GalleryComponent({ slug }) {
+  const [gallery, setGallery] = useState(null);
+  
+  useEffect(() => {
+    getGallery(slug).then(setGallery);
+  }, [slug]);
+  
+  if (!gallery) return <div>Loading...</div>;
+  
+  return (
+    <div>
+      <h1>{gallery.name}</h1>
+      <p>{gallery.description}</p>
+      <div className="photo-grid">
+        {gallery.photos
+          .sort((a, b) => a.display_order - b.display_order)
+          .map(photo => (
+            <div key={photo.id} className="photo-item">
+              <img 
+                src={`${API_URL}/galleries/photos/${photo.id}/file?thumbnail=true`}
+                alt={photo.title || photo.filename}
+                onClick={() => viewFullSize(photo.id)}
+              />
+              {photo.title && <p>{photo.title}</p>}
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+}
+
+function viewFullSize(photoId) {
+  // Open modal with full-size image
+  const imageUrl = `${API_URL}/galleries/photos/${photoId}/file`;
+  // ... modal logic
+}
+```
+
+### Upload Photo
+
+```javascript
+async function uploadPhoto(galleryId, file, title = '', description = '') {
+  const formData = new FormData();
+  formData.append('file', file);
+  if (title) formData.append('title', title);
+  if (description) formData.append('description', description);
+  
+  const response = await fetch(`${API_URL}/galleries/${galleryId}/photos`, {
+    method: 'POST',
+    body: formData
+    // Note: Don't set Content-Type header, browser will set it with boundary
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to upload photo');
+  }
+  
+  return await response.json();
+}
+
+// Example: File input handler
+document.getElementById('photoInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    try {
+      const photo = await uploadPhoto(1, file, 'My Photo', 'Description');
+      console.log('Uploaded:', photo);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
+  }
+});
+```
 ```
 
 ## Rate Limits

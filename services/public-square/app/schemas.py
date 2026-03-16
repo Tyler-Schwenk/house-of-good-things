@@ -1,7 +1,8 @@
 """
 Pydantic schemas for request/response validation.
 
-Defines data structures for API endpoints and validation rules.
+Defines data structures for API endpoints including users, posts, comments,
+galleries, and photos with comprehensive validation rules.
 """
 
 from pydantic import BaseModel, Field, ConfigDict
@@ -98,9 +99,83 @@ class CommentRead(CommentBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+# Gallery Schemas
+class GalleryBase(BaseModel):
+    """Base gallery fields for creation and updates."""
+    name: str = Field(..., min_length=1, max_length=200, description="Gallery name")
+    description: Optional[str] = Field(None, max_length=5000, description="Gallery description")
+    slug: str = Field(..., min_length=1, max_length=200, description="URL-friendly identifier")
+    is_public: bool = Field(default=True, description="Whether gallery is publicly visible")
+
+
+class GalleryCreate(GalleryBase):
+    """Schema for creating a new gallery."""
+    pass
+
+
+class GalleryUpdate(BaseModel):
+    """Schema for updating an existing gallery. All fields optional."""
+    name: Optional[str] = Field(None, min_length=1, max_length=200)
+    description: Optional[str] = Field(None, max_length=5000)
+    slug: Optional[str] = Field(None, min_length=1, max_length=200)
+    is_public: Optional[bool] = None
+
+
+class GalleryPhotoBase(BaseModel):
+    """Base gallery photo fields."""
+    title: Optional[str] = Field(None, max_length=200, description="Photo title")
+    description: Optional[str] = Field(None, max_length=5000, description="Photo description")
+    display_order: int = Field(default=0, description="Display order in gallery")
+
+
+class GalleryPhotoCreate(GalleryPhotoBase):
+    """Schema for creating a new photo (metadata only, file uploaded separately)."""
+    gallery_id: int
+
+
+class GalleryPhotoUpdate(BaseModel):
+    """Schema for updating photo metadata."""
+    title: Optional[str] = Field(None, max_length=200)
+    description: Optional[str] = Field(None, max_length=5000)
+    display_order: Optional[int] = None
+
+
+class GalleryPhotoRead(GalleryPhotoBase):
+    """Gallery photo data returned in API responses."""
+    id: int
+    gallery_id: int
+    filename: str
+    file_path: str
+    thumbnail_path: Optional[str] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    file_size: Optional[int] = None
+    mime_type: Optional[str] = None
+    created_at: datetime
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+class GalleryRead(GalleryBase):
+    """Gallery data returned in API responses."""
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    photo_count: Optional[int] = Field(None, description="Number of photos in gallery")
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+class GalleryWithPhotos(GalleryRead):
+    """Gallery with all photos included."""
+    photos: list[GalleryPhotoRead] = []
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
 # Health Check Schema
 class HealthCheck(BaseModel):
-    """Health check response."""
-    status: str = "healthy"
+    """Health check response schema."""
+    status: str
     version: str
     timestamp: datetime

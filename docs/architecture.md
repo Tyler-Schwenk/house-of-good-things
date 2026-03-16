@@ -17,19 +17,23 @@ Planning document for fart-pi multi-service home server. This will be updated as
 
 **Deployed Services:**
 1. **NetBird** - VPN for secure remote access (Bird Wide Web)
-   - Status: To be deployed on fart-pi
+   - Status: Running on fart-pi
    - NetBird IP: 100.124.76.27
    - Network Domain: johnserv.garrepi.dev
    - Management: Self-hosted by John at https://johnserv.garrepi.dev
    - Connected Peers: JohnSERV (100.124.56.240), JohnNAS, Bebop
 
-2. **Public Square** - FastAPI + SQLite forum API
+2. **Public Square** - FastAPI forum and gallery API
    - Status: Running and operational
    - Access: http://fart-pi.johnserv.garrepi.dev:8000 or http://100.124.76.27:8000
    - API Documentation: http://fart-pi.johnserv.garrepi.dev:8000/docs
    - Health Check: http://fart-pi.johnserv.garrepi.dev:8000/health
    - Database: SQLite at /app/data/public_square.db
-   - Authentication: JWT tokens (routers not yet implemented)
+   - Features:
+     - Forum discussions (posts, comments, users)
+     - Photo galleries with automatic thumbnails
+     - JWT authentication (routers not yet implemented)
+   - Photo Storage: /mnt/external-ssd/public-gallery
 
 3. **Beszel** - System monitoring and health tracking
    - Status: Running and operational
@@ -55,16 +59,24 @@ Planning document for fart-pi multi-service home server. This will be updated as
 ### Phase 1: Initial Deployment (PRIORITY)
 
 **Custom Applications**
-- **Public Square** 🚧 - Forum API for public discussions
+- **Public Square** - Forum and gallery API for website
   - FastAPI (Python) with SQLite database
   - User auth: JWT (email/password)
-  - Features: Posts, comments, threads
-  - Frontend: GitHub Pages (already deployed separately)
-  - Accessible via NetBird network
+  - Features: 
+    - Forum posts, comments, threads
+    - Photo galleries with automatic thumbnails
+    - Image storage and serving
+  - Frontend: GitHub Pages (hosted separately)
+  - Backend accessible via NetBird or public Cloudflare Tunnel (planned)
   - Port: 8000
   - API docs: `/docs` endpoint
-  - **Status**: Service structure created, routers not yet implemented
-  - **Why first**: Core personal project, drives need for other services
+  - Database models:
+    - Users (authentication + profile)
+    - Posts (forum threads)
+    - Comments (post replies)
+    - Galleries (photo albums)
+    - GalleryPhotos (photos with metadata)
+  - **Status**: Deployed, gallery endpoints operational
 
 **Infrastructure**
 - **NetBird** 🚧 - Secure remote access (Bird Wide Web)
@@ -109,14 +121,18 @@ Planning document for fart-pi multi-service home server. This will be updated as
   - Tool: Probably Restic
   - Target: Another Raspberry Pi
   - Connected via NetBird
-
-Legend: ✅ Deployed | 🚧 Next Up | 📋 Future
-
-## Storage Architecture
-
-### External SSD (`/mnt/external-ssd/`)
-**Purpose**: Store large media files
-
+Directories:
+```
+/mnt/external-ssd/
+├── music/              # Music library (Navidrome)
+├── photos/             # Photo library (Immich - planned)
+├── public-gallery/     # Curated photos for website (Public Square API)
+│   ├── gallery_1/
+│   │   ├── *.jpg       # Original images
+│   │   └── thumbnails/ # Auto-generated thumbnails (400x400px)
+│   └── gallery_2/
+├── files/              # General file storage (Samba - planned)
+└── backups/    
 Planned directories:
 ```
 /mnt/external-ssd/

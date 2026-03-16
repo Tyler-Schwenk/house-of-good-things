@@ -29,9 +29,9 @@
 ### Wi-Fi Interface (wlan0)
 - **MAC Address**: 88:a2:9e:09:3b:eb
 - **IP Address**: 192.168.1.115 (DHCP)
-- **SSID**: ATTCCfsuMU
-- **Frequency**: 5 GHz (5320 MHz)
-- **Signal Strength**: Approximately -71 dBm
+- **SSID**: what is joel's favorite snack
+- **Frequency**: 5 GHz (5240 MHz)
+- **Signal Strength**: Excellent (-18 dBm)
 - **Stability**: Fully functional, suitable for normal development
 
 ### Interface Behavior
@@ -96,8 +96,24 @@ ping 192.168.1.115
 
 Future network enhancements:
 - Static DHCP reservation for consistent Wi-Fi IP
-- NetBird installation for secure remote SSH access
 - SSH key authentication instead of password
+
+## Current Network Services
+
+### NetBird VPN
+- **Status**: Active (system service)
+- **NetBird IP**: 100.124.76.27/16
+- **FQDN**: fart-pi.johnserv.garrepi.dev
+- **Interface**: wt0 (WireGuard kernel)
+- **Network**: Bird Wide Web (self-hosted by John)
+- **Management**: https://johnserv.garrepi.dev
+
+### DNS Configuration
+- **Primary**: NetBird DNS (100.124.76.27) - unreachable locally due to WireGuard limitation
+- **Fallback**: 8.8.8.8 (Google), 1.1.1.1 (Cloudflare) - automatically added on NetBird restart
+- **Automation**: Systemd override runs /usr/local/bin/netbird-dns-fix.sh after NetBird starts
+- **Search Domains**: johnserv.garrepi.dev, attlocal.net
+- **Original Router DNS**: 192.168.1.254 (backed up in /etc/resolv.conf.original.netbird)
 - Automatic system updates configuration
 
 ## Status
