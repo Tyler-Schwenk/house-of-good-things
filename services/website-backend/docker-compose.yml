@@ -15,6 +15,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./app:/app/app
+      - ./scripts:/app/scripts
       - /media/tyler/FE645A9A645A558D/public-gallery:/app/photos
     restart: unless-stopped
     healthcheck:
