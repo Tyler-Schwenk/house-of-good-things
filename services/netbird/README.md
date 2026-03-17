@@ -111,10 +111,10 @@ ssh tyler@100.124.76.27
 Services running on the Pi can be accessed via NetBird:
 
 ```
-http://fart-pi.johnserv.garrepi.dev:4533      # Navidrome
 http://fart-pi.johnserv.garrepi.dev:8000      # Website Backend API
-http://100.124.76.27:4533                     # Navidrome (by IP)
+http://fart-pi.johnserv.garrepi.dev:8090      # Beszel
 http://100.124.76.27:8000                     # Website Backend API (by IP)
+http://100.124.76.27:8090                     # Beszel (by IP)
 ```
 
 ## Network Configuration

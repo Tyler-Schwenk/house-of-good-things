@@ -5,33 +5,35 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 ## Current Documentation
 
 ### Planning & Architecture
-- [**Pre-Deployment Checklist**](pre-deployment.md) - Accounts and prerequisites needed
-- [**Architecture Plan**](architecture.md) - System design, planned services, and open questions
-- [**Phase 1 Deployment**](phase1-deployment.md) - Step-by-step guide for NetBird and Public Square
-- [**Hardware & Network**](hardware.md) - Pi 5 specs and network configuration
-- [**Deployment Guide**](deployment.md) - General deployment procedures
+- [**Architecture Plan**](architecture.md) - System design, planned services, and deployment status
+- [**Website Integration**](website-integration.md) - How to integrate GitHub Pages frontend with Pi backend
+- [**Bird Wide Web**](BirdWideWeb.md) - NetBird network topology
 
 ### External Documentation
 - [**Website Backend API**](api/website-backend-api.md) - API documentation for frontend developers
 - [**Website Integration**](website-integration.md) - How to integrate GitHub Pages frontend with Pi backend
 
 ### Services
+- [**Website Backend**](api/website-backend-api.md) - Forum and photo gallery API
 - [**Beszel**](services/beszel.md) - System monitoring and health tracking
-- [**Navidrome**](services/navidrome.md) - Music streaming (future deployment)
+- [**Cloudflare Tunnel**](services/cloudflare-tunnel.md) - Public API access
+
+### For Tyler
+- [**Tyler's Quick Reference**](FORTYLER/README.md) - Practical guides and workflows
 
 ## System Overview
 
 **What's deployed:**
-- Raspberry Pi 5 running Pi OS
-- Navidrome music streaming service
+- Raspberry Pi 5 running Pi OS (hostname: fart-pi)
+- Website Backend API (forum + photo galleries)
+- NetBird VPN (Bird Wide Web network)
+- Beszel system monitoring
+- Cloudflare Tunnel (public API access)
 - External SSD for media storage
 
 **What's planned:**
-- NetBird VPN for remote access (self-hosted by John)
 - Immich photo management
-- Monitoring solution
 - Samba file sharing
-- Blog backend
 - Off-site backups
 
 See [Architecture Plan](architecture.md) for full details.
@@ -40,14 +42,22 @@ See [Architecture Plan](architecture.md) for full details.
 
 ### Access
 
-**SSH**: 
+**SSH (Remote via NetBird)**: 
+```bash
+ssh tyler@fart-pi.johnserv.garrepi.dev
+ssh tyler@100.124.76.27
+```
+
+**SSH (Local Network)**:
 ```bash
 ssh tyler@192.168.1.115      # Via Wi-Fi
 ssh tyler@192.168.1.116      # Via Ethernet
 ```
 
 **Web Services**:
-- Navidrome: http://192.168.1.115:4533
+- Website Backend API: http://100.124.76.27:8000 (via NetBird) or http://localhost:8000 (on Pi)
+- Beszel: http://100.124.76.27:8090 (via NetBird)
+- Public API: https://trinity-minus-correctly-lap.trycloudflare.com (temporary)
 
 ### Common Commands
 
@@ -84,12 +94,23 @@ All documentation follows these rules:
 
 ```
 docs/
-├── README.md              # This file
-├── architecture.md        # Planning and design
-├── hardware.md            # Hardware specs
-├── deployment.md          # Deployment guide
-└── services/
-    └── navidrome.md       # Navidrome service
+├── README.md                      # This file
+├── architecture.md                # System design and deployment status
+├── website-integration.md         # Frontend integration guide
+├── BirdWideWeb.md                 # NetBird network topology
+├── api/
+│   └── website-backend-api.md     # API documentation
+├── services/
+│   ├── beszel.md                  # Monitoring setup
+│   └── cloudflare-tunnel.md       # Public access setup
+├── FORTYLER/
+│   ├── README.md                  # Quick reference index
+│   ├── photo-upload-workflow.md   # Adding new photos
+│   └── public-api-setup.md        # Tunnel setup guide
+└── internal/
+    ├── README.md                  # Internal reference
+    ├── hardware.md                # Hardware specs
+    └── deployment.md              # Deployment procedures
 ```
 
 ## Resources

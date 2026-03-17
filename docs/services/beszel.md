@@ -5,10 +5,9 @@ System monitoring dashboard for fart-pi.
 ## Status
 
 **Deployed and operational**
-- Dashboard accessible at http://100.72.84.128:8090
-- Agent version: 0.18.4
+- Dashboard accessible at http://100.124.76.27:8090
 - Monitoring system: fart-pi
-- Current metrics: CPU 0.14%, RAM 9.13%, Disk 14.4%, Temp 53.73°C
+- Current metrics: CPU, RAM, disk, temperature, Docker containers
 
 ## Purpose
 

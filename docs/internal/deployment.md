@@ -51,9 +51,9 @@ To deploy a service:
 3. Navigate to the service directory
 4. Run docker compose
 
-Example for Navidrome:
+Example:
 ```bash
-cd ~/house-of-good-things/services/navidrome
+cd ~/house-of-good-things/services/website-backend
 docker compose up -d
 ```
 
@@ -141,12 +141,13 @@ git pull origin main
 
 Each service exposes ports on the Pi. These are defined in each service's `docker-compose.yml`.
 
-Common ports:
-- Navidrome: 4533
+Deployed services:
+- Website Backend API: 8000
+- Beszel: 8090
 
 To access services:
 - **Local**: http://192.168.1.115:PORT
-- **Remote**: Configure port forwarding on router or use NetBird
+- **Remote**: Via NetBird VPN or Cloudflare Tunnel
 
 ### Firewall Configuration
 

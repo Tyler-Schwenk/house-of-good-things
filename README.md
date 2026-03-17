@@ -11,34 +11,39 @@ Configuration repository for **fart-pi** - Raspberry Pi 5 home server.
 
 **Deployed Services:**
 1. **NetBird** - VPN for secure remote access (Bird Wide Web)
-   - Status: To be deployed
+   - Status: Running and operational
    - Network: Bird Wide Web (johnserv.garrepi.dev)
    - NetBird IP: 100.124.76.27
+   - NetBird hostname: fart-pi.johnserv.garrepi.dev
    - Management: Self-hosted by John at https://johnserv.garrepi.dev
    - Connected Peers: JohnSERV, JohnNAS, Bebop
 
 2. **Website Backend** - FastAPI + SQLite backend (forum + gallery)
-   - Status: Running
-   - Access: http://fart-pi.johnserv.garrepi.dev:8000
-   - API Docs: http://fart-pi.johnserv.garrepi.dev:8000/docs
-   - Health: http://fart-pi.johnserv.garrepi.dev:8000/health
+   - Status: Running and operational
+   - Private Access: http://100.124.76.27:8000 (via NetBird) or http://localhost:8000 (on Pi)
+   - Public Access: https://trinity-minus-correctly-lap.trycloudflare.com (quick tunnel, temporary URL)
+   - API Docs: http://100.124.76.27:8000/docs
    - Features:
-     - Public Square forum (posts, comments - endpoints pending)
-     - Photo galleries with thumbnails (implemented)
-     - JWT authentication (JWT tokens, routers pending)
+     - Photo galleries: 16 albums, 255 photos migrated (operational)
+     - Public Square forum: Posts, comments (routers pending implementation)
+     - JWT authentication ready
 
 3. **Beszel** - System monitoring
    - Status: Running and operational
    - Dashboard: http://100.124.76.27:8090 (via NetBird)
    - Monitoring: CPU, RAM, disk, temperature, network, containers
-   - Agent version: 0.18.4
 
-**Phase 2+ - Future Services:**
+4. **Cloudflare Tunnel** - Public API access
+   - Status: Running in quick tunnel mode
+   - URL: https://trinity-minus-correctly-lap.trycloudflare.com (temporary)
+   - Target: website-backend-api:8000
+
+**Phase 2+ - Future:**
 - Immich (photo management)
 - Samba (local file sharing)
 - Off-site backups
 
-See full planning document: [docs/architecture.md](docs/architecture.md)
+See [docs/architecture.md](docs/architecture.md) for complete architecture and planning.
 
 ## Hardware
 
@@ -58,46 +63,32 @@ More details: [docs/hardware.md](docs/hardware.md)
 
 ```
 house-of-good-things/
-├── services/           # Docker Compose configs for each service
-│   ├── beszel/         # System monitoring (ready to deploy)
-│   ├── netbird/        # VPN access (Bird Wide Web)
-│   └── website-backend/  # Forum + gallery API (deployed)
-├── docs/               # Documentation
-│   ├── pre-deployment.md    # Prerequisites checklist
-│   ├── phase1-deployment.md # Step-by-step deployment
-│   ├── architecture.md      # System planning
-│   ├── hardware.md          # Hardware specs
+├── services/                # Docker Compose configs for each service
+│   ├── website-backend/     # Forum + gallery API
+│   ├── netbird/             # VPN access (Bird Wide Web)
+│   ├── beszel/              # System monitoring
+│   └── cloudflared/         # Cloudflare tunnel
+├── docs/                    # Documentation
+│   ├── README.md            # Documentation index
+│   ├── architecture.md      # System architecture and planning
+│   ├── website-integration.md  # Frontend integration guide
+│   ├── BirdWideWeb.md       # NetBird topology
+│   ├── api/                 # API documentation
 │   ├── services/            # Service-specific docs
-│   │   ├── beszel.md        # Monitoring documentation
-│   │   └── navidrome.md     # Music streaming (future)
-│   └── api/                 # External API docs
-│       └── website-backend-api.md
-└── scripts/            # Automation scripts (TBD)
+│   ├── FORTYLER/            # Practical quick reference
+│   └── internal/            # Internal reference docs
+└── scripts/                 # Automation scripts (in service directories)
 ```
 
 ## Getting Started
 
-### Prerequisites Needed
+**System is already deployed.** For operational guides:
 
-Before deploying to the Pi, you'll need:
+- **Add photos**: See [docs/FORTYLER/photo-upload-workflow.md](docs/FORTYLER/photo-upload-workflow.md)
+- **Access services**: See Quick Reference sections in [docs/README.md](docs/README.md)
+- **API documentation**: See [docs/api/website-backend-api.md](docs/api/website-backend-api.md)
 
-1. **NetBird Account** - Access to John's self-hosted instance at https://johnserv.garrepi.dev
-2. **Docker on Pi** - Check if installed: `ssh tyler@192.168.1.115 docker --version`
-3. **Get Code to Pi** - Either via GitHub or direct copy
-
-See complete checklist: [docs/pre-deployment.md](docs/pre-deployment.md)
-
-### Deployment Process
-
-Once prerequisites are done:
-
-1. **Get code on Pi:**
-   ```bash
-   # Option A: Push to GitHub, then clone on Pi
-   # Option B: scp -r house-of-good-things tyler@192.168.1.115:~/
-   ```
-
-2. **Deploy services:**
+For deploying new services or making changes, see [docs/architecture.md](docs/architecture.md).
    - Follow step-by-step: [docs/phase1-deployment.md](docs/phase1-deployment.md)
    - Deploy NetBird first (~5 min)
    - Then deploy Website Backend (~10 min)

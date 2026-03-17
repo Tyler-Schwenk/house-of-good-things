@@ -5,21 +5,21 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 ## Current Documentation
 
 ### Planning & Architecture
-- [**Architecture Plan**](architecture.md) - System design, planned services, and open questions
+- [**Architecture Plan**](../architecture.md) - System design, planned services, and open questions
 - [**Hardware & Network**](hardware.md) - Pi 5 specs and network configuration
 - [**Deployment Guide**](deployment.md) - How to deploy services on fart-pi
 
 ### Services
-- [**Navidrome**](services/navidrome.md) - Music streaming (already deployed)
+See main docs/services/ directory for service-specific documentation.
 
 ## System Overview
 
 **What's deployed:**
-- Raspberry Pi 5 running Raspberry Pi OS
+- Raspberry Pi 5 running Raspberry Pi OS (hostname: fart-pi)
 - NetBird VPN for remote access (Bird Wide Web network)
 - Beszel monitoring agent
-- Website Backend API (forum + galleries)
-- Navidrome music streaming service
+- Website Backend API (forum + photo galleries)
+- Cloudflare Tunnel (public API access)
 - External SSD for media storage
 
 **What's planned:**
@@ -27,7 +27,7 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 - Samba file sharing
 - Off-site backups
 
-See [Architecture Plan](architecture.md) for full details.
+See main [Architecture Plan](../architecture.md) for full details.
 
 ## Quick Reference
 
@@ -46,8 +46,9 @@ ssh tyler@192.168.1.116      # Via Ethernet
 ```
 
 **Web Services**:
-- Navidrome: http://fart-pi.johnserv.garrepi.dev:4533 (via NetBird)
-- Website Backend API: http://fart-pi.johnserv.garrepi.dev:8000 (via NetBird)
+- Website Backend API: http://100.124.76.27:8000 (via NetBird)
+- Beszel: http://100.124.76.27:8090 (via NetBird)
+- Public API: https://trinity-minus-correctly-lap.trycloudflare.com (temporary)
 
 ### Common Commands
 
@@ -83,13 +84,10 @@ All documentation follows these rules:
 ## Structure
 
 ```
-docs/
+docs/internal/
 ├── README.md              # This file
-├── architecture.md        # Planning and design
-├── hardware.md            # Hardware specs
-├── deployment.md          # Deployment guide
-└── services/
-    └── navidrome.md       # Navidrome service
+├── hardware.md            # Hardware specs and network details
+└── deployment.md          # Deployment procedures
 ```
 
 ## Resources

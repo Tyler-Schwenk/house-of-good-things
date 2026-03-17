@@ -2,11 +2,20 @@
 
 Cloudflare Tunnel creates a secure connection from your Pi to Cloudflare's edge, allowing public access to your API without exposing ports or configuring port forwarding.
 
+## Current Setup
+
+**Mode:** Quick Tunnel (temporary URL)
+**Status:** Operational
+**URL:** https://trinity-minus-correctly-lap.trycloudflare.com
+**Target:** website-backend-api:8000
+
+**Important:** Quick tunnel URLs are temporary and change on restart. For a permanent custom domain, see "Option 2: Named Tunnel" below.
+
 ## Prerequisites
 
-- Cloudflare account (free tier works)
-- Domain name managed by Cloudflare (optional - can use trycloudflare.com subdomain)
+- Docker and Docker Compose
 - Website Backend API running on Pi
+- Network: Both containers on website-backend_default network
 
 ## Benefits
 
@@ -17,19 +26,57 @@ Cloudflare Tunnel creates a secure connection from your Pi to Cloudflare's edge,
 - Works behind CGNAT
 - Can restrict access by country, IP, etc.
 
-## Installation
+## Option 1: Quick Tunnel (Current Setup)
 
-### Option 1: Docker (Recommended)
-
-Create Cloudflare Tunnel service:
-
-```bash
-cd ~/house-of-good-things/services
-mkdir -p cloudflared
-cd cloudflared
-```
+Fast setup with automatic free .trycloudflare.com subdomain. No Cloudflare account required.
 
 **docker-compose.yml:**
+```yaml
+services:
+  cloudflared:
+    image: cloudflare/cloudflare:latest
+    container_name: cloudflared-tunnel
+    restart: unless-stopped
+    command: tunnel --url http://website-backend-api:8000
+    networks:
+      - website-backend_default
+
+networks:
+  website-backend_default:
+    external: true
+```
+
+**Deploy:**
+```bash
+cd ~/house-of-good-things/services/cloudflared
+docker compose up -d
+docker compose logs -f
+```
+
+**Find your URL:**
+Look for this in the logs:
+```
+Your quick Tunnel has been created! Visit it at:
+https://random-words-here.trycloudflare.com
+```
+
+**Caveat:** URL changes every container restart. Not suitable for production if you need a stable URL.
+
+## Option 2: Named Tunnel (Permanent URL)
+
+For production with custom domain (api.yoursite.com). Requires Cloudflare account and domain.
+
+### Setup Steps
+
+1. **Create Cloudflare account** and add your domain
+
+2. **Get tunnel token:**
+   - Visit https://one.dash.cloudflare.com/
+   - Navigate to Zero Trust > Networks > Tunnels
+   - Create tunnel named `fart-pi-tunnel`
+   - Copy the tunnel token
+
+3. **Update docker-compose.yml:**
 ```yaml
 services:
   cloudflared:
@@ -40,131 +87,76 @@ services:
     environment:
       - TUNNEL_TOKEN=${TUNNEL_TOKEN}
     networks:
-      - website-backend-network
+      - website-backend_default
 
 networks:
-  website-backend-network:
+  website-backend_default:
     external: true
-    name: website-backend_default
 ```
 
-### Option 2: Native Installation
-
-```bash
-# Install cloudflared
-curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64 -o cloudflared
-sudo mv cloudflared /usr/local/bin/
-sudo chmod +x /usr/local/bin/cloudflared
-
-# Authenticate with Cloudflare
-cloudflared tunnel login
-```
-
-## Setup Steps
-
-### 1. Create Tunnel
-
-Visit Cloudflare Zero Trust dashboard or use CLI:
-
-```bash
-# Via CLI
-cloudflared tunnel create fart-pi-tunnel
-
-# This creates a tunnel ID and credentials file
-# Save the tunnel ID - you'll need it
-```
-
-Or via dashboard:
-1. Go to https://one.dash.cloudflare.com/
-2. Navigate to Networks > Tunnels
-3. Click "Create a tunnel"
-4. Name it: `fart-pi-tunnel`
-5. Choose environment: Docker
-6. Copy the tunnel token
-
-### 2. Configure Tunnel Routing
-
-Map your public hostname to the internal service:
-
-**Via Dashboard:**
-1. In tunnel settings, add public hostname
-2. Subdomain: `api` (or whatever you want)
-3. Domain: `yoursite.com`
-4. Service: `http://website-backend-api:8000`
-5. Save
-
-**Via config file (config.yml):**
-```yaml
-tunnel: <your-tunnel-id>
-credentials-file: /etc/cloudflared/credentials.json
-
-ingress:
-  - hostname: api.yoursite.com
-    service: http://website-backend-api:8000
-  - service: http_status:404
-```
-
-### 3. Deploy Tunnel
-
-**Docker method:**
+4. **Configure environment:**
 ```bash
 cd ~/house-of-good-things/services/cloudflared
-echo "TUNNEL_TOKEN=<your-token-from-dashboard>" > .env
+cp .env.example .env
+nano .env
+```
+
+Add your token:
+```env
+TUNNEL_TOKEN=your-token-here
+```
+
+5. **Deploy:**
+```bash
+docker compose down
 docker compose up -d
 ```
 
-**Native method:**
-```bash
-# Copy config to system location
-sudo mkdir -p /etc/cloudflared
-sudo cp config.yml /etc/cloudflared/
+6. **Configure routing in Cloudflare dashboard:**
+   - Edit tunnel → Add public hostname
+   - Fill form:
+     - Public hostname: api.yoursite.com
+     - Service: http://website-backend-api:8000
+   - Save
 
-# Install as systemd service
-sudo cloudflared service install
-sudo systemctl start cloudflared
-sudo systemctl enable cloudflared
-```
+### Permanent URL Result
 
-### 4. Update CORS Configuration
+Your API will be accessible at: https://api.yoursite.com
 
-Update Website Backend API to allow requests from your domain:
+## Update CORS Configuration
+
+After tunnel is running, update Website Backend API to allow requests from tunnel domain:
 
 ```bash
 cd ~/house-of-good-things/services/website-backend
 nano .env
 ```
 
-Add your domain to CORS_ORIGINS:
+Add tunnel domain to CORS_ORIGINS:
 ```env
-CORS_ORIGINS=https://yourusername.github.io,https://api.yoursite.com
+CORS_ORIGINS=http://localhost:3000,http://localhost:5173,https://tyler-schwenk.github.io,https://your-tunnel-url.trycloudflare.com
 ```
 
-Restart Website Backend API:
+Restart:
 ```bash
 docker compose restart
 ```
 
 ## Verification
 
-### Check Tunnel Status
-
-**Docker:**
+**Check tunnel status and get URL:**
 ```bash
-docker logs cloudflared-tunnel
+cd ~/house-of-good-things/services/cloudflared
+docker compose logs
 ```
 
-**Native:**
+Look for: "Your quick Tunnel has been created! Visit it at: https://..."
+
+**Test public access:**
+
+From any device (not on local network):
 ```bash
-sudo systemctl status cloudflared
-```
-
-Look for: "Registered tunnel connection"
-
-### Test Public Access
-
-From your phone (not on home network):
-```bash
-curl https://api.yoursite.com/health
+curl https://your-tunnel-url.trycloudflare.com/health
 ```
 
 Should return:
@@ -172,119 +164,94 @@ Should return:
 {
   "status": "healthy",
   "version": "1.0.0",
-  "timestamp": "2026-03-15T..."
+  "timestamp": "..."
 }
 ```
 
-### Test API Documentation
-
-Visit in browser: `https://api.yoursite.com/docs`
-
-Should show Swagger UI with all endpoints.
-
-## Using Free Subdomain
-
-If you don't have a domain, Cloudflare provides free subdomains:
-
-1. Create tunnel as normal
-2. Instead of custom domain, use: `<random>.trycloudflare.com`
-3. Cloudflare generates a unique URL
-4. Note: URL may change if tunnel restarts
-
-To get persistent free subdomain, you can register a free domain at:
-- Freenom (free .tk, .ml, .ga, .cf, .gq domains)
-- Add domain to Cloudflare
-- Use with tunnel
+**Test in browser:**
+- Health: https://your-tunnel-url.trycloudflare.com/health
+- Galleries: https://your-tunnel-url.trycloudflare.com/galleries
+- API docs: https://your-tunnel-url.trycloudflare.com/docs
 
 ## Security Considerations
 
-### Add Access Policies
+**Quick Tunnel Mode:**
+- Tunnel URL is obscure and hard to guess
+- No authentication by default on public endpoints
+- Gallery endpoints (GET) are safe to expose publicly
+- Write operations (POST/PUT/DELETE) require JWT auth in API
 
-Restrict who can access your API:
-
-1. Go to Cloudflare Zero Trust > Access > Applications
-2. Create application for your API hostname
-3. Add policies:
-   - Allow specific countries only
-   - Allow specific email domains
-   - Require authentication for admin endpoints
-
-### Rate Limiting
-
-Add rate limiting in Cloudflare dashboard:
-1. Go to Security > WAF
-2. Create rate limiting rule
-3. Set threshold (e.g., 100 requests/minute per IP)
-
-### Authentication
-
-For sensitive endpoints (photo uploads, post creation), implement:
-- JWT authentication in API (already configured)
-- Cloudflare Access for additional layer
+**For production with named tunnel:**
+- Use Cloudflare Zero Trust access policies
+- Add rate limiting via Cloudflare WAF
+- Restrict by country/IP if needed
 
 ## Troubleshooting
 
-### Tunnel Not Connecting
-
-Check tunnel status:
+**Tunnel not starting:**
 ```bash
-docker logs cloudflared-tunnel
-# or
-sudo journalctl -u cloudflared -f
+docker compose logs cloudflared
 ```
 
 Common issues:
-- Invalid tunnel token
-- Network connectivity issues
-- Service name mismatch in routing
+- Website Backend API container not running
+- Network isolation (containers not on same network)
+- Port conflict
 
-### 502 Bad Gateway
+**Error 1033 or 502:**
 
 Causes:
-- Website Backend API not running
-- Wrong service name/port in tunnel config
-- Network isolation between containers
+- Website Backend API not responding
+- Wrong service name in tunnel command
+- API container crashed
 
 Fix:
 ```bash
-# Ensure API is running
+# Check API is running
 docker ps | grep website-backend
 
-# Check if tunnel can reach API
-docker exec cloudflared-tunnel ping website-backend-api
-
-# Verify API responds locally
+# Test API locally
 curl http://localhost:8000/health
+
+# Restart both services
+cd ~/house-of-good-things/services/website-backend
+docker compose restart
+cd ~/house-of-good-things/services/cloudflared
+docker compose restart
 ```
 
-### CORS Errors
+**CORS errors:**
 
-If frontend gets CORS errors:
-1. Check CORS_ORIGINS in .env includes your domain
-2. Ensure protocol matches (https vs http)
-3. Restart API after CORS changes
+If frontend gets blocked:
+1. Add tunnel URL to CORS_ORIGINS in website-backend/.env
+2. Ensure protocol matches (https for tunnel)
+3. Restart API container
+
+**URL changed after restart:**
+
+Quick tunnel URLs are temporary. Either:
+- Accept new URL and update frontend
+- Switch to named tunnel with custom domain (Option 2)
 
 ## Monitoring
 
-Check tunnel health:
-- Cloudflare dashboard shows connection status
-- Alert on tunnel disconnections
-- Monitor 5xx errors in Cloudflare Analytics
-
-Add to Beszel monitoring:
+**Check tunnel health:**
 ```bash
-# Add tunnel container to Beszel monitoring
-# It will track if container stops
+docker ps | grep cloudflared
+docker compose logs cloudflared --tail 50
 ```
+
+Look for "Registered tunnel connection" messages.
+
+**Beszel monitoring:**
+- Tunnel container resource usage tracked automatically
+- Alerts if container stops
 
 ## Cost
 
-Cloudflare Tunnel is **completely free** for personal use:
-- Unlimited bandwidth
-- Unlimited requests
+Cloudflare Tunnel is **completely free**:
+- Quick tunnel: No account required
+- Named tunnel: Free with Cloudflare account
+- Unlimited bandwidth and requests
 - DDoS protection included
 - SSL/TLS certificates included
-
-## Alternative: Using Cloudflare Pages/Workers
-
-For even tighter integration, you can deploy your frontend to Cloudflare Pages and use Workers for API routing, but tunnel is simpler for now.

@@ -11,71 +11,40 @@ Make your Pi API publicly accessible so your GitHub Pages website can fetch gall
 ## How It Works
 
 ```
-Visitor's Browser → api.yoursite.com (Cloudflare) → Tunnel → Pi → API
+Visitor's Browser → random.trycloudflare.com (Cloudflare) → Tunnel → Pi → API
 ```
 
 - **Secure**: No ports open on router, tunnel is outbound from Pi
 - **Fast**: Cloudflare CDN caching
 - **Safe**: Read-only gallery endpoints are public, write operations still require auth
 
-## Setup (One-Time)
+## Quick Setup (Current)
 
-### 1. Create Tunnel
-
-Visit: https://one.dash.cloudflare.com/
-- Navigate to Zero Trust > Networks > Tunnels
-- Create tunnel named `fart-pi-tunnel`
-- Copy the token
-
-### 2. Deploy Tunnel Container
+### 1. Deploy Tunnel Container
 
 On Pi:
 ```bash
-mkdir -p ~/house-of-good-things/services/cloudflared
 cd ~/house-of-good-things/services/cloudflared
-nano docker-compose.yml
-```
-
-Paste:
-```yaml
-services:
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared-tunnel
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run
-    environment:
-      - TUNNEL_TOKEN=YOUR_TOKEN_HERE
-    networks:
-      - website-backend_default
-
-networks:
-  website-backend_default:
-    external: true
-```
-
-Start:
-```bash
 docker compose up -d
+docker compose logs -f
 ```
 
-### 3. Configure Routing
+Look for:
+```
+Your quick Tunnel has been created! Visit it at:
+https://trinity-minus-correctly-lap.trycloudflare.com
+```
 
-In Cloudflare dashboard under your tunnel:
-- Public hostname: `api.yoursite.com`
-- Service: `http://website-backend-api:8000`
-- Save
-
-### 4. Update CORS
+### 2. Update CORS
 
 ```bash
 cd ~/house-of-good-things/services/website-backend
 nano .env
 ```
 
-Add tunnel domain:
+Add tunnel URL:
 ```env
-CORS_ORIGINS=http://localhost:3000,https://tyler-schwenk.github.io,https://api.yoursite.com
+CORS_ORIGINS=http://localhost:3000,http://localhost:5173,https://tyler-schwenk.github.io,https://trinity-minus-correctly-lap.trycloudflare.com
 ```
 
 Restart:
@@ -83,18 +52,18 @@ Restart:
 docker compose restart
 ```
 
-## Test
+### 3. Test
 
-```bash
-# From anywhere
-curl https://api.yoursite.com/health
-curl https://api.yoursite.com/galleries
+From your phone or any device:
+```
+https://trinity-minus-correctly-lap.trycloudflare.com/health
+https://trinity-minus-correctly-lap.trycloudflare.com/galleries
 ```
 
 ## Using in Frontend
 
 ```typescript
-const API_URL = 'https://api.yoursite.com';
+const API_URL = 'https://trinity-minus-correctly-lap.trycloudflare.com';
 
 // Fetch gallery
 const gallery = await fetch(`${API_URL}/galleries/slug/jordan`).then(r => r.json());
@@ -102,5 +71,7 @@ const gallery = await fetch(`${API_URL}/galleries/slug/jordan`).then(r => r.json
 // Display photo
 <img src={`${API_URL}/galleries/photos/${photo.id}/file?thumbnail=true`} />
 ```
+
+**Important:** Quick tunnel URL changes on restart. For permanent URL, get a custom domain and use named tunnel setup (see docs/services/cloudflare-tunnel.md).
 
 Done! Your website can now load photos from Pi for all visitors.

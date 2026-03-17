@@ -4,7 +4,7 @@ A secure network of self hosted servers, connected via NetBird
 
 ## Main nodes withing Bird Wide Web
 
-Tyler - 'House of Good things' ip, runs on 'fart-pi' (raspberry pi 5). main programs include: music hosting via navidrome (called 'the virtual opium den'), Website Backend API providing forum (Public Square) and photo galleries for his personal website (https://tyler-schwenk.github.io/). also running beszel and netbird
+Tyler - 'House of Good things' ip, runs on 'fart-pi' (raspberry pi 5). main programs include: Website Backend API providing forum (Public Square) and photo galleries for his personal website (https://tyler-schwenk.github.io/). also running beszel and netbird
 
 John - 'JohnHOME' ip, runs JohnNAS and JohnSERV (please fill in these details, john). main programs include: hosting the NetBird Overlay Network, minecraft server, Jellyfin movie streamer.
 
@@ -70,7 +70,8 @@ ssh user@<netbird-hostname-or-ip>
 ```mermaid
 flowchart LR
 
-Navidrome --> FartPi
+WebsiteBackend[Website Backend] --> FartPi
+Beszel --> FartPi
 Mattbot --> Bebop
 LLM --> Bebop
 SpeechToText[Speech to Text] --> Bebop
@@ -90,8 +91,10 @@ flowchart TB
 
 subgraph "House of good things"
     FartPi[FartPi]
-    Navidrome
-    Navidrome --> FartPi
+    WebsiteBackend[Website Backend]
+    Beszel
+    WebsiteBackend --> FartPi
+    Beszel --> FartPi
     NetBird --> FartPi
 end
 

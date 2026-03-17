@@ -1,10 +1,10 @@
 # Architecture Plan
 
-**Status**: Planning phase - most services not yet implemented
+**Status**: Phase 1 deployed and operational - Website Backend (gallery + forum), NetBird, Beszel, Cloudflare Tunnel all running
 
 ## Overview
 
-Planning document for fart-pi multi-service home server. This will be updated as services are actually deployed and tested.
+System architecture for fart-pi multi-service home server.
 
 ## Current State
 
@@ -26,23 +26,28 @@ Planning document for fart-pi multi-service home server. This will be updated as
 2. **Website Backend** - FastAPI backend for tyler-schwenk.github.io
    - Status: Running and operational
    - Access: http://fart-pi.johnserv.garrepi.dev:8000 or http://100.124.76.27:8000
-   - API Documentation: http://fart-pi.johnserv.garrepi.dev:8000/docs
-   - Health Check: http://fart-pi.johnserv.garrepi.dev:8000/health
-   - Database: SQLite at /app/data/website_backend.db (single file, multiple tables)
+   - Public Access: https://trinity-minus-correctly-lap.trycloudflare.com (quick tunnel, temporary URL)
+   - API Documentation: http://100.124.76.27:8000/docs
+   - Health Check: http://100.124.76.27:8000/health
+   - Database: SQLite at /app/data/website_backend.db (16 galleries, 255 photos)
    - Features:
-     - **Public Square Forum**: Posts, comments, discussions with user authentication
-     - **Photo Galleries**: Albums with automatic thumbnail generation and serving
-     - JWT authentication (routers not yet fully implemented)
+     - **Photo Galleries**: 16 albums with automatic thumbnail generation (255 photos migrated)
+     - **Public Square Forum**: Posts, comments, discussions (routers pending implementation)
+     - JWT authentication ready
    - Photo Storage: /media/tyler/FE645A9A645A558D/public-gallery
-   - Note: Immich (future) will be separate service for personal photo management
 
 3. **Beszel** - System monitoring and health tracking
    - Status: Running and operational
    - Dashboard: http://100.124.76.27:8090 (via NetBird)
    - Hub + Agent architecture
    - Monitoring: CPU, RAM, disk, temperature, network, Docker containers
-   - Agent version: 0.18.4
    - Resource usage: <1% CPU, ~50MB RAM
+
+4. **Cloudflare Tunnel** - Public API access
+   - Status: Running in quick tunnel mode
+   - URL: https://trinity-minus-correctly-lap.trycloudflare.com (temporary)
+   - Target: website-backend-api:8000
+   - Note: URL changes on container restart
 
 **Later additions (Phase 2+):**
 - Immich (photo management)
@@ -55,75 +60,69 @@ Planning document for fart-pi multi-service home server. This will be updated as
 - **Storage**: External SSD via USB (for large media files)
 - **Network**: Dual connectivity (Ethernet + WiFi)
 
-## Planned Services
+## Services
 
-### Phase 1: Initial Deployment (PRIORITY)
+### Phase 1: Core Infrastructure (DEPLOYED)
 
-**Custom Applications**
-- **Website Backend** - Unified API backend for tyler-schwenk.github.io
-  - FastAPI (Python) with single SQLite database (multiple tables)
-  - User auth: JWT (email/password)
-  - **Features:**
-    - **Public Square** (forum): Posts, comments, threads with authentication
-    - **Photo Galleries**: Album management, automatic thumbnails, image serving
-  - Frontend: GitHub Pages (hosted separately at tyler-schwenk.github.io)
-  - Backend accessible via NetBird or public Cloudflare Tunnel (planned)
-  - Port: 8000
-  - API docs: `/docs` endpoint
-  - Database: Single SQLite file (`website_backend.db`) with tables:
-    - users (authentication + profile)
-    - posts (forum threads for Public Square)
-    - comments (post replies for Public Square)
-    - galleries (photo albums)
-    - gallery_photos (photos with metadata, thumbnails)
-  - **Status**: Deployed, gallery endpoints operational, forum endpoints pending
-  - **Not related**: Immich (future) will be separate personal photo service
+**Website Backend API**
+- Unified backend for tyler-schwenk.github.io
+- FastAPI (Python) with single SQLite database
+- User auth: JWT (email/password)
+- **Features:**
+  - **Photo Galleries**: 16 albums, 255 photos with automatic thumbnails (operational)
+  - **Public Square Forum**: Posts, comments, threads (routers pending implementation)
+- Frontend: GitHub Pages (hosted separately at tyler-schwenk.github.io)
+- Access:
+  - Private: http://100.124.76.27:8000 (via NetBird) or http://localhost:8000 (on Pi)
+  - Public: https://trinity-minus-correctly-lap.trycloudflare.com (quick tunnel, temporary URL)
+- Port: 8000
+- Database: website_backend.db with tables for users, posts, comments, galleries, gallery_photos
+- Photo Storage: /media/tyler/FE645A9A645A558D/public-gallery
 
-**Infrastructure**
-- **NetBird** (Next Up) - Secure remote access (Bird Wide Web)
-  - WireGuard-based VPN mesh network
-  - No port forwarding needed
-  - Access all services remotely via hostname or IP
-  - Peer-to-peer connectivity with friends' servers
-  - **Status**: Account created, not yet deployed on fart-pi
-  - **Why first**: Required for remote development and Bird Wide Web connectivity
+**NetBird VPN**
+- WireGuard-based mesh network (Bird Wide Web)
+- Self-hosted by John at https://johnserv.garrepi.dev
+- NetBird IP: 100.124.76.27
+- NetBird hostname: fart-pi.johnserv.garrepi.dev
+- Connected peers: JohnSERV, JohnNAS, Bebop
+- Status: Running and operational
+
+**Beszel Monitoring**
+- System health tracking
+- Dashboard: http://100.124.76.27:8090 (via NetBird)
+- Monitoring: CPU, RAM, disk, temperature, Docker containers
+- Resource usage: <1% CPU, ~50MB RAM
+- Status: Running and operational
+
+**Cloudflare Tunnel**
+- Public API access without port forwarding
+- Mode: Quick tunnel (temporary URL)
+- URL: https://trinity-minus-correctly-lap.trycloudflare.com
+- Target: website-backend-api:8000
+- Status: Running and operational
 
 ### Phase 2+: Future Services
 
 **Media Services**
-- **Navidrome** (Deployed) - Music streaming (Subsonic API compatible)
-  - Already deployed
-  - Port: 4533
-  - Will be accessible via NetBird once deployed
-  
-- **Immich** (Future) - Photo management with mobile backup
+- **Immich** - Photo management with mobile backup
   - Self-hosted Google Photos alternative
   - Automatic phone photo backup
   - Machine learning for faces/objects
   - Port: 2283
 
-**Monitoring**
-- **Beszel** (Future) - System health tracking
-  - Lightweight monitoring
-  - Track CPU, RAM, disk, temperature
-  - Alert on issues
-  - Port: 8090
-
 **File Sharing**
-- **Samba** (Future) - Local network file sharing
+- **Samba** - Local network file sharing
   - SMB/CIFS for Windows/Mac/Linux
   - Access Pi files from any local device
   - Port: 445
   - Local network only
 
 **Backups**
-- **Off-site backup** (Future) - To parents' house
+- **Off-site backup** - To parents' house
   - Automated encrypted backups
   - Tool: Probably Restic
   - Target: Another Raspberry Pi
   - Connected via NetBird
-
-Legend: (Deployed) | (Next Up) | (Future)
 
 ## Storage Architecture
 
@@ -135,14 +134,15 @@ Legend: (Deployed) | (Next Up) | (Future)
 Directories:
 ```
 /media/tyler/FE645A9A645A558D/
-├── music/              # Music library (Navidrome)
-├── photos/             # Personal photo library (Immich - future, separate from website)
+├── photos/             # Personal photo library (Immich - future)
 ├── public-gallery/     # Curated photos for website galleries (Website Backend API)
-│   ├── gallery_1/
+│   ├── jordan/
 │   │   ├── *.jpg       # Original images
 │   │   └── thumbnails/ # Auto-generated thumbnails (400x400px)
-│   └── gallery_2/
-└── movies/             # Movie collection
+│   ├── durango/
+│   ├── friends/
+│   └── ... # 16 galleries total, 255 photos
+└── files/              # General file storage
 ```
 
 ## Website Architecture (tyler-schwenk.github.io)
@@ -198,16 +198,17 @@ const response = await fetch('http://api.yoursite.com/galleries/slug/jordan');
 const gallery = await response.json();
 ```
 
-### Internal Storage (SD Card/NVMe)
+### Internal Storage (SD Card)
 **Purpose**: System and service configurations
 
 ```
 /home/tyler/house-of-good-things/    # This repo
 ├── services/                         # Service configs
-│   ├── navidrome/                   # Exists
-│   ├── immich/                      # To create
-│   ├── netbird/                     # To create
-│   └── ...
+│   ├── website-backend/             # Deployed
+│   ├── netbird/                     # Deployed
+│   ├── beszel/                      # Deployed
+│   ├── cloudflared/                 # Deployed
+│   └── ...                          # Future services
 ├── docs/                            # Documentation
 └── scripts/                         # Automation scripts
 ```
@@ -215,7 +216,7 @@ const gallery = await response.json();
 Each service directory contains:
 - `docker-compose.yml` - Container configuration
 - `.env` - Secrets and config (not in Git)
-- `data/` - Service databases and caches
+- `data/` - Service databases and caches (if needed)
 - `README.md` - Service-specific docs
 
 ## Docker Architecture
@@ -229,39 +230,48 @@ Each service directory contains:
 ```
 Raspberry Pi OS (Host)
 ├── Docker Engine
-│   ├── Navidrome container (deployed)
-│   ├── NetBird container (planned)
-│   ├── Immich containers (planned)
-│   ├── Monitoring container (planned)
-│   └── Samba container (planned)
+│   ├── website-backend-api (deployed)
+│   ├── netbird (deployed)
+│   ├── beszel-hub (deployed)
+│   ├── beszel-agent (deployed)
+│   ├── cloudflared-tunnel (deployed)
+│   └── Future containers (Immich, Samba, etc.)
 └── house-of-good-things/ (This repo - config files)
 ```
 
 **Volume mounting example:**
 ```yaml
 services:
-  navidrome:
+  website-backend:
     volumes:
-      - /mnt/external-ssd/music:/music:ro    # Maps SSD to container
-      - ./data:/data                          # Service database
+      - /media/tyler/FE645A9A645A558D/public-gallery:/app/photos:ro
+      - ./data:/app/data
 ```
 
 ## Network Architecture
 
 ### Local Network Access
 ```
-Your PC/Phone (on WiFi) → 192.168.1.115:4533 → Navidrome
+Your Browser → 192.168.1.115:8000 → Website Backend API
 ```
 - Direct access when on home network
 - Fast (local speeds)
 
-### Remote Access (via NetBird)
+### Private Remote Access (via NetBird)
 ```
-Your Phone (anywhere) → NetBird VPN → fart-pi:4533 → Navidrome
+Your Device (anywhere) → NetBird VPN → fart-pi:8000 → Website Backend API
 ```
 - Peer-to-peer encrypted connection
 - No port forwarding needed
-- Access via: `http://fart-pi.johnserv.garrepi.dev:4533` or `http://100.124.76.27:4533`
+- Access via: `http://fart-pi.johnserv.garrepi.dev:8000` or `http://100.124.76.27:8000`
+
+### Public Access (via Cloudflare Tunnel)
+```
+Visitor's Browser → Cloudflare Edge → Tunnel → Pi → Website Backend API
+```
+- For public website visitors (GitHub Pages integration)
+- No VPN required
+- Current URL: https://trinity-minus-correctly-lap.trycloudflare.com (temporary)
 
 **NetBird Benefits:**
 - No open ports on home router
@@ -270,32 +280,38 @@ Your Phone (anywhere) → NetBird VPN → fart-pi:4533 → Navidrome
 - Automatic local network optimization
 - Part of Bird Wide Web collaborative network
 
+**Cloudflare Tunnel Benefits:**
+- Public access without VPN
+- Free SSL/TLS certificates
+- DDoS protection
+- No router configuration
+
 ### Service Port Plan
 
-| Service | Port | Local Access | Remote Access |
-|---------|------|--------------|---------------|
-| Navidrome | 4533 | Yes | Planned (via NetBird) |
-| Immich | 2283 | Planned | Planned (via NetBird) |
-| Monitoring | 8090 | Planned | Planned (via NetBird) |
-| Samba | 445 | Planned | No (local only) |
-| Blog Backend | 3000 | Planned | Planned (via NetBird) |
+| Service | Port | Local Access | Private Remote | Public Remote |
+|---------|------|--------------|----------------|---------------|
+| Website Backend | 8000 | Yes | Via NetBird | Via Tunnel |
+| Beszel | 8090 | Yes | Via NetBird | No |
+| Immich | 2283 | Planned | Planned | No |
+| Samba | 445 | Planned | No | No |
 
 ## Security Approach
 
 **Remote Access:**
-- All remote access via NetBird VPN
-- No ports exposed to internet
+- Private access via NetBird VPN (authenticated peers only)
+- Public access via Cloudflare Tunnel (gallery/forum read endpoints only)
+- No ports exposed directly to internet
 - No router port forwarding
 
 **Container Isolation:**
 - Each service in own container
-- Dedicated Docker networks
-- Read-only mounts where appropriate
+- Dedicated Docker networks where needed
+- Read-only mounts for shared storage
 
 **Secrets Management:**
 - Passwords in `.env` files
 - `.env` files not committed to Git
-- Strong passwords for all services
+- JWT auth for API write operations
 
 **Regular Updates:**
 - Docker images kept updated
@@ -306,17 +322,16 @@ Your Phone (anywhere) → NetBird VPN → fart-pi:4533 → Navidrome
 
 ### What to Backup
 **Critical (daily):**
-- Photo library
-- Service databases
-- Blog content
+- Photo library (public-gallery)
+- Service databases (website_backend.db)
+- User data
 
 **Important (weekly):**
-- Music library (if changed)
 - Service configurations
 
 **Low priority:**
 - Cached data
-- Downloadable content
+- Thumbnails (can be regenerated)
 
 ### Backup Target
 - Another Raspberry Pi at parents' house
@@ -330,81 +345,46 @@ Probably Restic:
 - Reliable restore
 - Low overhead
 
-## Implementation Plan
+## Implementation Status
 
-### Phase 1: Initial Deployment (CURRENT FOCUS)
+### Phase 1: Core Infrastructure (COMPLETED)
 
-**Step 1: Deploy NetBird**
-1. Create `services/netbird/` with docker-compose.yml
-2. Get NetBird setup key from John's dashboard (https://johnserv.garrepi.dev)
-3. Deploy container on Pi
-4. Verify connection from laptop/phone
-5. Test SSH via NetBird hostname (ssh tyler@fart-pi.johnserv.garrepi.dev)
+**Deployed:**
+- NetBird VPN (Bird Wide Web connection)
+- Website Backend API (FastAPI + SQLite)
+  - Photo galleries: 16 albums, 255 photos migrated
+  - Forum routers: Pending implementation
+- Beszel monitoring
+- Cloudflare Tunnel (quick tunnel mode)
 
-**Step 2: Deploy Blog Backend**
-1. Create `services/blog-backend/` structure
-2. Write FastAPI application:
-   - Database models (User, Post, Comment)
-   - Auth endpoints (register, login)
-   - CRUD endpoints for posts/comments
-   - SQLite database
-3. Create Dockerfile and docker-compose.yml
-4. Test locally, then deploy to Pi
-5. Access via NetBird network
-6. Connect GitHub Pages frontend to API
+**Verified:**
+- Gallery API endpoints functional
+- Public access via Cloudflare tunnel working
+- Automatic thumbnail generation
+- NetBird connectivity to John's network
+- Beszel monitoring active
 
-**Step 3: Verify & Document**
-1. Test full workflow (register, post, comment)
-2. Verify public access works
-3. Test from different devices
-4. Update documentation with actual setup
+### Phase 2: Expand Services (PLANNED)
 
-### Phase 2: Expand Infrastructure (LATER)
+**Next:**
+- Immich photo management
+- Samba file sharing
+- Off-site backup system
+- Consider permanent domain for tunnel
 
-**Media & Monitoring**
-1. Deploy monitoring (Beszel)
-2. Improve Navidrome setup (migrate to SSD if needed)
-3. Deploy Immich for photos
+## Open Questions
 
-**Storage & Backups**
-1. Set up external SSD properly
-2. Create directory structure
-3. Deploy Samba for local file sharing
-4. Set up parents' Pi at their house
-5. Configure automated backups
+### Website Backend
+- [ ] Implement forum authentication routers
+- [ ] Add rate limiting to prevent spam
+- [ ] Moderation features for Public Square
+- [ ] Custom domain for permanent tunnel URL
 
-## Open Questions & Decisions Needed
-
-### Phase 1: Blog Backend (IN PROGRESS - DECISIONS MADE)
-- [x] Tech stack? **→ FastAPI (Python) - open source, well-documented, AI-friendly**
-- [x] Database choice? **→ SQLite - simpler, lighter, perfect for personal blog**
-- [x] Auth strategy? **→ FastAPI-Users library (email/password + OAuth)**
-- [x] Network access? **→ NetBird - part of Bird Wide Web collaborative network**
-- [ ] Frontend-backend communication details?
-- [ ] Rate limiting to prevent spam?
-- [ ] Moderation features needed?
-
-### Phase 1: NetBird
-- [x] Network choice? **→ NetBird - chosen for collaborative setup with John**
-- [x] Self-hosted vs cloud? **→ Self-hosted by John = unlimited users/peers**
-- [x] Collaborative setup? **→ Yes - Bird Wide Web with John and friends**
-- [x] Enable DNS? **→ Yes - allows ssh tyler@fart-pi.johnserv.garrepi.dev**
-- [ ] Access control policies needed?
-
-### Phase 2+: Storage
-- [ ] What size SSD? (500GB, 1TB, 2TB?)
-- [ ] Filesystem: ext4 or NTFS?
-- [ ] How to organize directories?
-
-### Phase 2+: Monitoring
-- [ ] Which tool? (Beszel is lightweight)
-- [ ] What to monitor beyond basics?
-- [ ] Where to send alerts?
-
-### Phase 2+: Immich
-- [ ] Disable ML on Pi 5 for performance?
-- [ ] How much storage for photos?
-- [ ] Backup strategy for photos?
+### Future Services
+- [ ] Immich: Disable ML on Pi 5 for performance?
+- [ ] Storage sizing for Immich
+- [ ] Samba security configuration
+- [ ] Off-site backup frequency and retention
 
 ### Phase 2+: Backups
 - [ ] Backup frequency?

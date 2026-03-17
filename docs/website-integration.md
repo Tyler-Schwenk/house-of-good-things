@@ -2,6 +2,14 @@
 
 How tyler-schwenk.github.io integrates with the Website Backend API on fart-pi.
 
+## Current Status
+
+**API Migration:** Completed (255 photos across 16 galleries)
+**API Access:** https://trinity-minus-correctly-lap.trycloudflare.com (quick tunnel, temporary URL)
+**Frontend Integration:** Pending (frontend still using static files)
+
+**Next:** Update frontend to fetch from API instead of static gallery files.
+
 ## Architecture Overview
 
 ### Hybrid Static + Dynamic Model
@@ -83,7 +91,9 @@ gallery.photos.map(photo => (
 
 ## Migration Steps
 
-### Step 1: Copy Photos to Pi
+**Status:** Steps 1-2 completed. Photos migrated and registered in database.
+
+### Step 1: Copy Photos to Pi (COMPLETED)
 
 From your local machine with the website repo:
 
@@ -93,7 +103,7 @@ scp -r "C:\path\to\tyler-schwenk.github.io\public\images\gallery\*" tyler@192.16
 
 This preserves your folder structure (jordan/, durango/, friends/, etc.).
 
-### Step 2: Register Photos in Database
+### Step 2: Register Photos in Database (COMPLETED)
 
 On the Pi:
 
