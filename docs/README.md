@@ -13,6 +13,7 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 
 ### External Documentation
 - [**Website Backend API**](api/website-backend-api.md) - API documentation for frontend developers
+- [**Website Integration**](website-integration.md) - How to integrate GitHub Pages frontend with Pi backend
 
 ### Services
 - [**Beszel**](services/beszel.md) - System monitoring and health tracking

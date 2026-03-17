@@ -1,5 +1,5 @@
 The resources in C:\Users\tyler\important\projects\pi\house-of-good-things\docs are authoritative and must be referenced before making changes.  
-They must also be kept up to date as changes are made.
+They must also be kept up to date as changes are made. remmeber this means both adding new documentation as needed, but also removing old documentation that is no longer accurate or redundant!
 
 - docs/
   - Contains all project documentation, organized into subfolders

@@ -362,6 +362,8 @@ website-backend/
 │       ├── auth.py       # Auth endpoints (TODO)
 │       ├── posts.py      # Post endpoints (TODO)
 │       └── comments.py   # Comment endpoints (TODO)
+├── scripts/
+│   └── migrate_photos.py # Photo migration utility
 ├── data/                 # SQLite database (not in Git)
 │   └── website_backend.db
 ├── docker-compose.yml    # Container orchestration
@@ -390,6 +392,41 @@ curl http://localhost:8000/health
 ```bash
 du -h data/website_backend.db
 ```
+
+## Photo Migration
+
+### Migrating Existing Photos
+
+If you have existing photo folders to migrate into the gallery system:
+
+**Step 1: Copy photos to external SSD**
+```bash
+# From your local machine
+scp -r /path/to/photos/* tyler@192.168.1.116:/media/tyler/FE645A9A645A558D/public-gallery/
+```
+
+**Step 2: Verify folder structure**
+```bash
+# On the Pi
+ls /media/tyler/FE645A9A645A558D/public-gallery/
+# Should show: jordan/, durango/, friends/, etc.
+```
+
+**Step 3: Run migration script**
+```bash
+cd ~/house-of-good-things/services/website-backend
+docker exec website-backend-api python scripts/migrate_photos.py
+```
+
+The script will:
+- Scan all subdirectories in `/app/photos` (mapped to public-gallery)
+- Create a gallery for each folder
+- Upload all images with automatic thumbnails
+- Preserve folder-based organization
+- Skip already-migrated galleries
+
+**Customize gallery metadata:**
+Edit `scripts/migrate_photos.py` and update the `GALLERY_CONFIG` dictionary with proper titles and descriptions for your trips/categories.
 
 ## Troubleshooting
 

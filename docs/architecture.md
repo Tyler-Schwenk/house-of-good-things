@@ -145,6 +145,59 @@ Directories:
 └── movies/             # Movie collection
 ```
 
+## Website Architecture (tyler-schwenk.github.io)
+
+### Hybrid Frontend + Backend Model
+
+**Frontend:** GitHub Pages (static site)
+- Repository: separate from this repo
+- Hosting: github.io CDN (fast, global)
+- Framework: Next.js with static export
+
+**Backend:** Website Backend API (this repo, on Pi)
+- Repository: services/website-backend/
+- Hosting: fart-pi (home server)
+- Framework: FastAPI + SQLite
+
+### Content Distribution Strategy
+
+**Static Content on GitHub Pages (Fast):**
+- Homepage images (hero, backgrounds, icons)
+- About page photos
+- Navigation assets
+- Any images that rarely change
+- Location: `/public/images/` in website repo
+- **Why**: CDN-backed, globally distributed, sub-100ms load times
+
+**Dynamic Content from Pi API (Slower):**
+- Photo galleries (frequent additions/removals)
+- Forum posts and comments (Public Square)
+- User-uploaded content
+- Any content managed via API
+- Location: `/media/tyler/FE645A9A645A558D/public-gallery/` on Pi
+- **Why**: Easy to update, no Git commits needed, dynamic management
+
+### Migration from Static to API
+
+**Current state:** All photos in GitHub repo static files
+**Target state:** Gallery photos served from Pi API
+
+**Migration process:**
+1. Copy photo folders to Pi: `/media/tyler/FE645A9A645A558D/public-gallery/`
+2. Run migration script: `docker exec website-backend-api python scripts/migrate_photos.py`
+3. Update frontend to fetch from API instead of static files
+4. Remove gallery photos from GitHub repo (keep homepage/static images)
+
+**Frontend integration:**
+```typescript
+// Old: Static files at build time
+const photos = fs.readdirSync('/public/images/gallery/jordan');
+
+// New: Fetch from API
+const response = await fetch('http://api.yoursite.com/galleries/slug/jordan');
+const gallery = await response.json();
+```
+
 ### Internal Storage (SD Card/NVMe)
 **Purpose**: System and service configurations
 
