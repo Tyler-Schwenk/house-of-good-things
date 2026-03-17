@@ -112,9 +112,9 @@ Services running on the Pi can be accessed via NetBird:
 
 ```
 http://fart-pi.johnserv.garrepi.dev:4533      # Navidrome
-http://fart-pi.johnserv.garrepi.dev:8000      # Public Square API
+http://fart-pi.johnserv.garrepi.dev:8000      # Website Backend API
 http://100.124.76.27:4533                     # Navidrome (by IP)
-http://100.124.76.27:8000                     # Public Square API (by IP)
+http://100.124.76.27:8000                     # Website Backend API (by IP)
 ```
 
 ## Network Configuration

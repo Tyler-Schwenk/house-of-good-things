@@ -1,17 +1,33 @@
-# Public Square API
+# Website Backend API
 
-Forum and gallery API for posts, comments, discussions, and photo management with user authentication.
+Backend API providing forum (Public Square) and photo gallery services.
 
 ## Overview
 
-Public Square is a RESTful API backend for a public forum and photo gallery platform. It provides:
+The Website Backend API is a unified RESTful API providing:
 
-- User registration and authentication (JWT)
-- Forum posts (threads/articles) and comments
-- Photo galleries with automatic thumbnail generation
-- Image storage and serving
-- Rate limiting to prevent abuse
-- SQLite database (lightweight, file-based)
+- **Public Square Forum**: User authentication, posts, comments, and discussions
+- **Photo Galleries**: Album management with automatic thumbnail generation and image serving
+- **Single Database**: SQLite file with all tables (users, posts, comments, galleries, photos)
+- **Rate limiting**: Protection against abuse
+- **JWT Authentication**: Secure token-based auth
+
+This service powers the backend for tyler-schwenk.github.io.
+
+## Architecture
+
+**One Service, Multiple Features:**
+- Forum functionality (Public Square)
+- Photo gallery management
+- User authentication shared across features
+
+**Single Database:**
+- File: `website_backend.db`
+- Contains all tables: users, posts, comments, galleries, gallery_photos
+- SQLite (lightweight, file-based, single file)
+
+**Separate from:**
+- Immich (future): Personal photo management, not part of website backend
 
 ## Technology Stack
 
@@ -261,7 +277,7 @@ docker exec tailscale tailscale funnel 8000
 ## Database
 
 ### Location
-- File: `./data/public_square.db`
+- File: `./data/website_backend.db`
 - Type: SQLite (single file database)
 
 ### Schema
@@ -271,19 +287,28 @@ docker exec tailscale tailscale funnel 8000
 - is_active, is_verified, is_superuser
 - created_at
 
-**Posts Table:**
+**Posts Table (Public Square Forum):**
 - id, title, content, author_id
 - created_at, updated_at, is_published
 
-**Comments Table:**
+**Comments Table (Public Square Forum):**
 - id, content, post_id, author_id
 - created_at, updated_at
+
+**Galleries Table:**
+- id, name, description, slug, is_public, user_id
+- created_at, updated_at
+
+**Gallery_Photos Table:**
+- id, gallery_id, filename, file_path, thumbnail_path
+- title, description, width, height, file_size, mime_type
+- display_order, created_at
 
 ### Backup
 
 Simply copy the database file:
 ```bash
-cp data/public_square.db data/public_square.db.backup
+cp data/website_backend.db data/website_backend.db.backup
 ```
 
 ## Security Features
@@ -323,7 +348,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ### Project Structure
 
 ```
-public-square/
+website-backend/
 ├── app/
 │   ├── main.py           # FastAPI application entry point
 │   ├── config.py         # Configuration and settings
@@ -331,11 +356,14 @@ public-square/
 │   ├── models.py         # SQLAlchemy ORM models
 │   ├── schemas.py        # Pydantic validation schemas
 │   ├── auth.py           # Authentication setup
-│   └── routers/          # API route handlers (TODO)
-│       ├── auth.py       # Auth endpoints
-│       ├── posts.py      # Post endpoints
-│       └── comments.py   # Comment endpoints
+│   └── routers/          # API route handlers
+│       ├── __init__.py
+│       ├── gallery.py    # Gallery/photo endpoints (implemented)
+│       ├── auth.py       # Auth endpoints (TODO)
+│       ├── posts.py      # Post endpoints (TODO)
+│       └── comments.py   # Comment endpoints (TODO)
 ├── data/                 # SQLite database (not in Git)
+│   └── website_backend.db
 ├── docker-compose.yml    # Container orchestration
 ├── Dockerfile            # Container image definition
 ├── requirements.txt      # Python dependencies
@@ -360,7 +388,7 @@ curl http://localhost:8000/health
 ### Database Size
 
 ```bash
-du -h data/public_square.db
+du -h data/website_backend.db
 ```
 
 ## Troubleshooting
@@ -383,10 +411,10 @@ docker compose up -d
 docker compose down
 
 # Backup current database
-cp data/public_square.db data/public_square.db.backup
+cp data/website_backend.db data/website_backend.db.backup
 
 # Remove database and recreate
-rm data/public_square.db
+rm data/website_backend.db
 docker compose up -d
 ```
 

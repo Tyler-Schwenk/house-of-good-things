@@ -1,9 +1,13 @@
-# Public Square API Documentation
+# Website Backend API Documentation
 
 **Version:** 1.0.0  
 **Base URL:** `https://fart-pi.your-tailnet.ts.net:8000`
 
-Public Square is a forum API that supports user authentication, posts, and comments.
+Backend API for tyler-schwenk.github.io providing:
+- **Public Square Forum**: User authentication, posts, comments, and discussions
+- **Photo Galleries**: Album management with automatic thumbnails and image serving
+
+**Database:** Single SQLite file (`website_backend.db`) with separate tables for forum and gallery features.
 
 ## Authentication
 

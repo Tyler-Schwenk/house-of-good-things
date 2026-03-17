@@ -17,13 +17,15 @@ Configuration repository for **fart-pi** - Raspberry Pi 5 home server.
    - Management: Self-hosted by John at https://johnserv.garrepi.dev
    - Connected Peers: JohnSERV, JohnNAS, Bebop
 
-2. **Public Square** - FastAPI + SQLite forum API
+2. **Website Backend** - FastAPI + SQLite backend (forum + gallery)
    - Status: Running
    - Access: http://fart-pi.johnserv.garrepi.dev:8000
    - API Docs: http://fart-pi.johnserv.garrepi.dev:8000/docs
    - Health: http://fart-pi.johnserv.garrepi.dev:8000/health
-   - Auth: JWT tokens (routers pending implementation)
-   - Features: Posts, comments, threads (endpoints pending)
+   - Features:
+     - Public Square forum (posts, comments - endpoints pending)
+     - Photo galleries with thumbnails (implemented)
+     - JWT authentication (JWT tokens, routers pending)
 
 3. **Beszel** - System monitoring
    - Status: Running and operational
@@ -59,7 +61,7 @@ house-of-good-things/
 ├── services/           # Docker Compose configs for each service
 │   ├── beszel/         # System monitoring (ready to deploy)
 │   ├── netbird/        # VPN access (Bird Wide Web)
-│   └── public-square/  # Forum API (deployed)
+│   └── website-backend/  # Forum + gallery API (deployed)
 ├── docs/               # Documentation
 │   ├── pre-deployment.md    # Prerequisites checklist
 │   ├── phase1-deployment.md # Step-by-step deployment
@@ -69,7 +71,7 @@ house-of-good-things/
 │   │   ├── beszel.md        # Monitoring documentation
 │   │   └── navidrome.md     # Music streaming (future)
 │   └── api/                 # External API docs
-│       └── public-square-api.md
+│       └── website-backend-api.md
 └── scripts/            # Automation scripts (TBD)
 ```
 
@@ -98,7 +100,7 @@ Once prerequisites are done:
 2. **Deploy services:**
    - Follow step-by-step: [docs/phase1-deployment.md](docs/phase1-deployment.md)
    - Deploy NetBird first (~5 min)
-   - Then deploy Public Square (~10 min)
+   - Then deploy Website Backend (~10 min)
 
 3. **Test everything:**
    - SSH via NetBird
@@ -109,9 +111,9 @@ Once prerequisites are done:
 
 **Current Focus: Phase 1 Deployment**
 
-Building the initial infrastructure to host a public forum (Public Square):
+Building the initial infrastructure:
 1. **NetBird** - Secure VPN access as part of the Bird Wide Web
-2. **Public Square** - FastAPI + SQLite forum API
+2. **Website Backend** - Unified API for Public Square forum and photo galleries
 
 Service structures are created in this repository. Frontend is deployed on GitHub Pages. Backend runs on Pi and is accessible via the NetBird network.
 
@@ -164,7 +166,7 @@ All documentation is in the [docs/](docs) directory:
 - [Pre-Deployment Checklist](docs/pre-deployment.md) - Start here!
 - [Architecture Plan](docs/architecture.md) - Overall system design with open questions
 - [Phase 1 Deployment](docs/phase1-deployment.md) - Step-by-step deployment guide
-- [Public Square API](docs/api/public-square-api.md) - API documentation for frontend
+- [Website Backend API](docs/api/website-backend-api.md) - API documentation for frontend
 - [Hardware & Network](docs/hardware.md) - Physical setup and networking
 
 ## Security Considerations

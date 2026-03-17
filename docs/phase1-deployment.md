@@ -1,6 +1,6 @@
 # Phase 1 Deployment Guide
 
-Step-by-step guide for deploying NetBird and Public Square API on fart-pi.
+Step-by-step guide for deploying NetBird and Website Backend API on fart-pi.
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ Step-by-step guide for deploying NetBird and Public Square API on fart-pi.
 
 Phase 1 consists of two services:
 1. **NetBird**: VPN for remote access as part of Bird Wide Web
-2. **Public Square**: Forum API backend
+2. **Website Backend**: Forum (Public Square) + photo gallery API
 
 Total deployment time: 30-45 minutes
 
@@ -50,7 +50,7 @@ ls -la services/
 Should show:
 ```
 netbird/
-public-square/
+website-backend/
 ```
 
 ## Step 2: Deploy NetBird
@@ -120,7 +120,7 @@ ssh tyler@100.124.76.27
 
 Success! You can now access the Pi from anywhere via the Bird Wide Web network.
 
-## Step 3: Deploy Public Square API
+## Step 3: Deploy Website Backend API
 
 ### 3.1 Generate JWT Secret
 
@@ -131,10 +131,10 @@ openssl rand -hex 32
 
 Copy the output (64-character hex string).
 
-### 3.2 Configure Public Square
+### 3.2 Configure Website Backend
 
 ```bash
-cd ~/house-of-good-things/services/public-square
+cd ~/house-of-good-things/services/website-backend
 cp .env.example .env
 nano .env
 ```
@@ -200,7 +200,7 @@ Visit the API URL in a browser:
 You should see:
 ```json
 {
-  "name": "Public Square API",
+  "name": "Website Backend API",
   "version": "1.0.0",
   "docs": "/docs",
   "health": "/health"
@@ -225,7 +225,7 @@ docker ps
 
 # Should show:
 # - netbird (Up)
-# - public-square-api (Up, healthy)
+# - website-backend-api (Up, healthy)
 ```
 
 Test access methods:
@@ -263,11 +263,11 @@ cat .env
 docker compose restart
 ```
 
-### Public Square Build Fails
+### Website Backend Build Fails
 
 ```bash
 # Check logs
-cd ~/house-of-good-things/services/public-square
+cd ~/house-of-good-things/services/website-backend
 docker compose logs
 
 # Rebuild
@@ -303,8 +303,8 @@ sudo netstat -tulpn | grep 8000
 cd ~/house-of-good-things/services/netbird
 docker compose logs -f
 
-# Public Square logs
-cd ~/house-of-good-things/services/public-square
+# Website Backend logs
+cd ~/house-of-good-things/services/website-backend
 docker compose logs -f
 ```
 
@@ -315,8 +315,8 @@ docker compose logs -f
 cd ~/house-of-good-things/services/netbird
 docker compose restart
 
-# Restart Public Square
-cd ~/house-of-good-things/services/public-square
+# Restart Website Backend
+cd ~/house-of-good-things/services/website-backend
 docker compose restart
 ```
 
@@ -328,8 +328,8 @@ cd ~/house-of-good-things
 # Pull latest code
 git pull
 
-# Rebuild Public Square if code changed
-cd services/public-square
+# Rebuild Website Backend if code changed
+cd services/website-backend
 docker compose build
 docker compose down
 docker compose up -d
@@ -340,8 +340,8 @@ docker compose up -d
 ### Backup Database
 
 ```bash
-cd ~/house-of-good-things/services/public-square
-cp data/public_square.db data/public_square.db.$(date +%Y%m%d_%H%M%S)
+cd ~/house-of-good-things/services/website-backend
+cp data/website_backend.db data/website_backend.db.$(date +%Y%m%d_%H%M%S)
 ```
 
 ## Next Steps
@@ -359,7 +359,7 @@ If something goes wrong:
 
 ```bash
 # Stop services
-cd ~/house-of-good-things/services/public-square
+cd ~/house-of-good-things/services/website-backend
 docker compose down
 
 cd ~/house-of-good-things/services/netbird

@@ -157,7 +157,7 @@ scp -r house-of-good-things tyler@192.168.1.115:~/
 **Future updates:**
 ```bash
 # Copy just changed files
-scp services/public-square/app/main.py tyler@192.168.1.115:~/house-of-good-things/services/public-square/app/
+scp services/website-backend/app/main.py tyler@192.168.1.115:~/house-of-good-things/services/website-backend/app/
 ```
 
 ## Pre-Deployment Steps Summary
@@ -190,7 +190,7 @@ ls -la services/
 # Should see:
 # - navidrome/
 # - netbird/
-# - public-square/
+# - website-backend/
 ```
 
 ## What Happens During Deployment

@@ -23,17 +23,18 @@ Planning document for fart-pi multi-service home server. This will be updated as
    - Management: Self-hosted by John at https://johnserv.garrepi.dev
    - Connected Peers: JohnSERV (100.124.56.240), JohnNAS, Bebop
 
-2. **Public Square** - FastAPI forum and gallery API
+2. **Website Backend** - FastAPI backend for tyler-schwenk.github.io
    - Status: Running and operational
    - Access: http://fart-pi.johnserv.garrepi.dev:8000 or http://100.124.76.27:8000
    - API Documentation: http://fart-pi.johnserv.garrepi.dev:8000/docs
    - Health Check: http://fart-pi.johnserv.garrepi.dev:8000/health
-   - Database: SQLite at /app/data/public_square.db
+   - Database: SQLite at /app/data/website_backend.db (single file, multiple tables)
    - Features:
-     - Forum discussions (posts, comments, users)
-     - Photo galleries with automatic thumbnails
-     - JWT authentication (routers not yet implemented)
+     - **Public Square Forum**: Posts, comments, discussions with user authentication
+     - **Photo Galleries**: Albums with automatic thumbnail generation and serving
+     - JWT authentication (routers not yet fully implemented)
    - Photo Storage: /media/tyler/FE645A9A645A558D/public-gallery
+   - Note: Immich (future) will be separate service for personal photo management
 
 3. **Beszel** - System monitoring and health tracking
    - Status: Running and operational
@@ -59,24 +60,24 @@ Planning document for fart-pi multi-service home server. This will be updated as
 ### Phase 1: Initial Deployment (PRIORITY)
 
 **Custom Applications**
-- **Public Square** - Forum and gallery API for website
-  - FastAPI (Python) with SQLite database
+- **Website Backend** - Unified API backend for tyler-schwenk.github.io
+  - FastAPI (Python) with single SQLite database (multiple tables)
   - User auth: JWT (email/password)
-  - Features: 
-    - Forum posts, comments, threads
-    - Photo galleries with automatic thumbnails
-    - Image storage and serving
-  - Frontend: GitHub Pages (hosted separately)
+  - **Features:**
+    - **Public Square** (forum): Posts, comments, threads with authentication
+    - **Photo Galleries**: Album management, automatic thumbnails, image serving
+  - Frontend: GitHub Pages (hosted separately at tyler-schwenk.github.io)
   - Backend accessible via NetBird or public Cloudflare Tunnel (planned)
   - Port: 8000
   - API docs: `/docs` endpoint
-  - Database models:
-    - Users (authentication + profile)
-    - Posts (forum threads)
-    - Comments (post replies)
-    - Galleries (photo albums)
-    - GalleryPhotos (photos with metadata)
-  - **Status**: Deployed, gallery endpoints operational
+  - Database: Single SQLite file (`website_backend.db`) with tables:
+    - users (authentication + profile)
+    - posts (forum threads for Public Square)
+    - comments (post replies for Public Square)
+    - galleries (photo albums)
+    - gallery_photos (photos with metadata, thumbnails)
+  - **Status**: Deployed, gallery endpoints operational, forum endpoints pending
+  - **Not related**: Immich (future) will be separate personal photo service
 
 **Infrastructure**
 - **NetBird** (Next Up) - Secure remote access (Bird Wide Web)
@@ -135,8 +136,8 @@ Directories:
 ```
 /media/tyler/FE645A9A645A558D/
 ├── music/              # Music library (Navidrome)
-├── photos/             # Personal photo library (Immich - planned)
-├── public-gallery/     # Curated photos for website (Public Square API)
+├── photos/             # Personal photo library (Immich - future, separate from website)
+├── public-gallery/     # Curated photos for website galleries (Website Backend API)
 │   ├── gallery_1/
 │   │   ├── *.jpg       # Original images
 │   │   └── thumbnails/ # Auto-generated thumbnails (400x400px)

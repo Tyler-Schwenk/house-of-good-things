@@ -18,7 +18,7 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 - Raspberry Pi 5 running Raspberry Pi OS
 - NetBird VPN for remote access (Bird Wide Web network)
 - Beszel monitoring agent
-- Public Square API backend
+- Website Backend API (forum + galleries)
 - Navidrome music streaming service
 - External SSD for media storage
 
@@ -47,7 +47,7 @@ ssh tyler@192.168.1.116      # Via Ethernet
 
 **Web Services**:
 - Navidrome: http://fart-pi.johnserv.garrepi.dev:4533 (via NetBird)
-- Public Square API: http://fart-pi.johnserv.garrepi.dev:8000 (via NetBird)
+- Website Backend API: http://fart-pi.johnserv.garrepi.dev:8000 (via NetBird)
 
 ### Common Commands
 

@@ -6,7 +6,7 @@ Cloudflare Tunnel creates a secure connection from your Pi to Cloudflare's edge,
 
 - Cloudflare account (free tier works)
 - Domain name managed by Cloudflare (optional - can use trycloudflare.com subdomain)
-- Public Square API running on Pi
+- Website Backend API running on Pi
 
 ## Benefits
 
@@ -40,12 +40,12 @@ services:
     environment:
       - TUNNEL_TOKEN=${TUNNEL_TOKEN}
     networks:
-      - public-square-network
+      - website-backend-network
 
 networks:
-  public-square-network:
+  website-backend-network:
     external: true
-    name: public-square_default
+    name: website-backend_default
 ```
 
 ### Option 2: Native Installation
@@ -90,7 +90,7 @@ Map your public hostname to the internal service:
 1. In tunnel settings, add public hostname
 2. Subdomain: `api` (or whatever you want)
 3. Domain: `yoursite.com`
-4. Service: `http://public-square-api:8000`
+4. Service: `http://website-backend-api:8000`
 5. Save
 
 **Via config file (config.yml):**
@@ -100,7 +100,7 @@ credentials-file: /etc/cloudflared/credentials.json
 
 ingress:
   - hostname: api.yoursite.com
-    service: http://public-square-api:8000
+    service: http://website-backend-api:8000
   - service: http_status:404
 ```
 
@@ -127,10 +127,10 @@ sudo systemctl enable cloudflared
 
 ### 4. Update CORS Configuration
 
-Update Public Square API to allow requests from your domain:
+Update Website Backend API to allow requests from your domain:
 
 ```bash
-cd ~/house-of-good-things/services/public-square
+cd ~/house-of-good-things/services/website-backend
 nano .env
 ```
 
@@ -139,7 +139,7 @@ Add your domain to CORS_ORIGINS:
 CORS_ORIGINS=https://yourusername.github.io,https://api.yoursite.com
 ```
 
-Restart Public Square API:
+Restart Website Backend API:
 ```bash
 docker compose restart
 ```
@@ -241,17 +241,17 @@ Common issues:
 ### 502 Bad Gateway
 
 Causes:
-- Public Square API not running
+- Website Backend API not running
 - Wrong service name/port in tunnel config
 - Network isolation between containers
 
 Fix:
 ```bash
 # Ensure API is running
-docker ps | grep public-square
+docker ps | grep website-backend
 
 # Check if tunnel can reach API
-docker exec cloudflared-tunnel ping public-square-api
+docker exec cloudflared-tunnel ping website-backend-api
 
 # Verify API responds locally
 curl http://localhost:8000/health

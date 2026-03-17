@@ -1,5 +1,5 @@
 """
-Configuration settings for Public Square API.
+Configuration settings for Website Backend API.
 
 Loads environment variables and provides typed configuration objects.
 """
@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
     
     # Database
-    DATABASE_URL: str = "sqlite:///data/public_square.db"
+    DATABASE_URL: str = "sqlite:///data/website_backend.db"
     
     # JWT Authentication
     JWT_SECRET: str
@@ -29,9 +29,9 @@ class Settings(BaseSettings):
     THUMBNAIL_QUALITY: int = 85
     
     # API Metadata
-    API_TITLE: str = "Public Square API"
+    API_TITLE: str = "Website Backend API"
     API_VERSION: str = "1.0.0"
-    API_DESCRIPTION: str = "Public forum API for posts, comments, and discussions"
+    API_DESCRIPTION: str = "Backend API for forum (Public Square) and photo galleries"
     
     @property
     def cors_origins_list(self) -> List[str]:

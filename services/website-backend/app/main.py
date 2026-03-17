@@ -1,7 +1,7 @@
 """
-Public Square API - Main application entry point.
+Website Backend API - Main application entry point.
 
-A forum API for posts, comments, and discussions with user authentication.
+Backend API providing forum (Public Square) and photo gallery services.
 """
 
 from fastapi import FastAPI

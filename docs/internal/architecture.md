@@ -34,7 +34,7 @@ Planning document for fart-pi multi-service home server. This will be updated as
 ### Phase 1: Initial Deployment (PRIORITY)
 
 **Custom Applications**
-- **Blog Backend** (Next Up) - Personal blog/public square forum
+- **Website Backend** (Next Up) - Unified API for Public Square forum and photo galleries
   - FastAPI (Python)
   - SQLite database
   - User auth (email/password + OAuth)
@@ -102,7 +102,7 @@ Planned directories:
 /media/tyler/FE645A9A645A558D/
 ├── music/          # Music library (Navidrome)
 ├── photos/         # Photo library (Immich)
-├── public-gallery/ # Curated photos for website (Public Square API)
+├── public-gallery/ # Curated photos for website galleries (Website Backend API)
 ├── movies/         # Movie collection
 └── files/          # General file storage (Samba)
 ```

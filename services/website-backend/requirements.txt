@@ -23,7 +23,7 @@ pydantic-settings==2.1.0
 Pillow==10.2.0
 
 # File uploads
-python-multipart==0.0.9
+python-multipart==0.0.7
 email-validator==2.1.0.post1
 
 # HTTP client

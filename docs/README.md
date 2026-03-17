@@ -12,7 +12,7 @@ Documentation for fart-pi Raspberry Pi 5 home server.
 - [**Deployment Guide**](deployment.md) - General deployment procedures
 
 ### External Documentation
-- [**Public Square API**](api/public-square-api.md) - API documentation for frontend developers
+- [**Website Backend API**](api/website-backend-api.md) - API documentation for frontend developers
 
 ### Services
 - [**Beszel**](services/beszel.md) - System monitoring and health tracking
