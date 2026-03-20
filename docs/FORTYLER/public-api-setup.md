@@ -1,5 +1,7 @@
 # Public API Access (Cloudflare Tunnel)
 
+**Note:** This guide is for quick tunnel (temporary URL). See [custom-domain-setup.md](custom-domain-setup.md) for permanent setup with tyler-schwenk.com.
+
 Make your Pi API publicly accessible so your GitHub Pages website can fetch gallery data.
 
 ## Why Needed

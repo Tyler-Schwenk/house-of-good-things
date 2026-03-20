@@ -4,5 +4,6 @@ this also means it needs to be really consice and short. just give the overview,
 
 ## Quick Guides
 
+- [custom-domain-setup.md](custom-domain-setup.md) - Set up tyler-schwenk.com with Cloudflare (one-time)
 - [photo-upload-workflow.md](photo-upload-workflow.md) - Add new trip photos to website
-- [public-api-setup.md](public-api-setup.md) - One-time setup for public API access (Cloudflare Tunnel)
+- [public-api-setup.md](public-api-setup.md) - Quick tunnel setup (replaced by custom domain)
