@@ -49,8 +49,17 @@ System architecture for fart-pi multi-service home server.
    - Tunnel Name: fart-pi-tunnel
    - Target: website-backend-api:8000
 
-**Later additions (Phase 2+):**
-- Immich (photo management)
+**Ready to deploy (Phase 2):**
+5. **Immich** - Photo and video management
+   - Status: Configured, ready to deploy
+   - Port: 2283
+   - Access: http://100.124.76.27:2283 (via NetBird)
+   - Features: Mobile backup, face recognition, object detection, albums
+   - Storage: /media/tyler/FE645A9A645A558D/photos
+   - Components: Server, microservices, ML, Redis, PostgreSQL
+   - Setup guide: docs/FORTYLER/immich-setup.md
+
+**Later additions (Phase 3+):**
 - Samba (local file sharing)
 - Off-site backups
 
@@ -102,21 +111,39 @@ System architecture for fart-pi multi-service home server.
 - Target: website-backend-api:8000
 - Status: Running and operational
 
-### Phase 2+: Future Services
+### Phase 2: Media Services (READY TO DEPLOY)
 
-**Media Services**
-- **Immich** - Photo management with mobile backup
-  - Self-hosted Google Photos alternative
-  - Automatic phone photo backup
-  - Machine learning for faces/objects
-  - Port: 2283
+**Immich**
+- Photo and video management with mobile backup
+- Self-hosted Google Photos alternative
+- Features:
+  - Automatic mobile backup (iOS/Android apps)
+  - Face detection and recognition
+  - Object recognition and search
+  - Timeline view
+  - Albums and sharing
+  - Duplicate detection
+  - Raw photo and video support
+- Components:
+  - immich-server (main web interface)
+  - immich-microservices (background jobs)
+  - immich-machine-learning (AI features)
+  - Redis (caching)
+  - PostgreSQL (database)
+- Storage: /media/tyler/FE645A9A645A558D/photos
+- Port: 2283
+- Access: http://100.124.76.27:2283 (via NetBird) or http://192.168.1.116:2283 (local)
+- Status: Configured, ready to deploy
+- Setup: See docs/FORTYLER/immich-setup.md
 
-**File Sharing**
-- **Samba** - Local network file sharing
-  - SMB/CIFS for Windows/Mac/Linux
-  - Access Pi files from any local device
-  - Port: 445
-  - Local network only
+### Phase 3: File Sharing & Backups (PLANNED)
+
+**Samba**
+- Local network file sharing
+- SMB/CIFS for Windows/Mac/Linux
+- Access Pi files from any local device
+- Port: 445
+- Local network only
 
 **Backups**
 - **Off-site backup** - To parents' house
