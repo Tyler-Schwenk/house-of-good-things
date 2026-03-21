@@ -4,12 +4,13 @@ Cloudflare Tunnel creates a secure connection from your Pi to Cloudflare's edge,
 
 ## Current Setup
 
-**Mode:** Quick Tunnel (temporary URL)
+**Mode:** Named Tunnel (permanent custom domain)
 **Status:** Operational
-**URL:** https://trinity-minus-correctly-lap.trycloudflare.com
+**Domain:** api.tyler-schwenk.com
+**Tunnel:** fart-pi-tunnel
 **Target:** website-backend-api:8000
 
-**Important:** Quick tunnel URLs are temporary and change on restart. For a permanent custom domain, see "Option 2: Named Tunnel" below.
+See [docs/FORTYLER/custom-domain-setup.md](../FORTYLER/custom-domain-setup.md) for full setup guide.
 
 ## Prerequisites
 
@@ -26,9 +27,64 @@ Cloudflare Tunnel creates a secure connection from your Pi to Cloudflare's edge,
 - Works behind CGNAT
 - Can restrict access by country, IP, etc.
 
-## Option 1: Quick Tunnel (Current Setup)
+## Option 1: Named Tunnel (Current Setup)
 
-Fast setup with automatic free .trycloudflare.com subdomain. No Cloudflare account required.
+Production setup with custom domain (api.tyler-schwenk.com). Permanent URL.
+
+### Setup Steps
+
+1. **Create Cloudflare account** and add your domain
+
+2. **Create tunnel:**
+   - Visit https://one.dash.cloudflare.com/
+   - Navigate to Networks > Tunnels
+   - Create tunnel named `fart-pi-tunnel`
+   - Configure published application route:
+     - Subdomain: `api`
+     - Domain: `tyler-schwenk.com`
+     - Service: `HTTP`
+     - URL: `website-backend-api:8000`
+   - Copy the tunnel token
+
+3. **Update docker-compose.yml:**
+```yaml
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - website-backend_default
+
+networks:
+  website-backend_default:
+    external: true
+```
+
+4. **Configure environment:**
+```bash
+cd ~/house-of-good-things/services/cloudflared
+echo "TUNNEL_TOKEN=your-token-here" > .env
+```
+
+5. **Deploy:**
+```bash
+docker compose down
+docker compose up -d
+```
+
+### Result
+
+API accessible at: https://api.tyler-schwenk.com
+
+See [docs/FORTYLER/custom-domain-setup.md](../FORTYLER/custom-domain-setup.md) for complete setup instructions including DNS configuration.
+
+## Option 2: Quick Tunnel (Temporary Alternative)
+
+Fast setup with automatic free .trycloudflare.com subdomain. No Cloudflare account required. URL changes on restart.
 
 **docker-compose.yml:**
 ```yaml
@@ -62,70 +118,9 @@ https://random-words-here.trycloudflare.com
 
 **Caveat:** URL changes every container restart. Not suitable for production if you need a stable URL.
 
-## Option 2: Named Tunnel (Permanent URL)
-
-For production with custom domain (api.yoursite.com). Requires Cloudflare account and domain.
-
-### Setup Steps
-
-1. **Create Cloudflare account** and add your domain
-
-2. **Get tunnel token:**
-   - Visit https://one.dash.cloudflare.com/
-   - Navigate to Zero Trust > Networks > Tunnels
-   - Create tunnel named `fart-pi-tunnel`
-   - Copy the tunnel token
-
-3. **Update docker-compose.yml:**
-```yaml
-services:
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared-tunnel
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run
-    environment:
-      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
-    networks:
-      - website-backend_default
-
-networks:
-  website-backend_default:
-    external: true
-```
-
-4. **Configure environment:**
-```bash
-cd ~/house-of-good-things/services/cloudflared
-cp .env.example .env
-nano .env
-```
-
-Add your token:
-```env
-TUNNEL_TOKEN=your-token-here
-```
-
-5. **Deploy:**
-```bash
-docker compose down
-docker compose up -d
-```
-
-6. **Configure routing in Cloudflare dashboard:**
-   - Edit tunnel → Add public hostname
-   - Fill form:
-     - Public hostname: api.yoursite.com
-     - Service: http://website-backend-api:8000
-   - Save
-
-### Permanent URL Result
-
-Your API will be accessible at: https://api.yoursite.com
-
 ## Update CORS Configuration
 
-After tunnel is running, update Website Backend API to allow requests from tunnel domain:
+After tunnel is running, update Website Backend API to allow requests from your domain:
 
 ```bash
 cd ~/house-of-good-things/services/website-backend
@@ -134,7 +129,7 @@ nano .env
 
 Add tunnel domain to CORS_ORIGINS:
 ```env
-CORS_ORIGINS=http://localhost:3000,http://localhost:5173,https://tyler-schwenk.github.io,https://your-tunnel-url.trycloudflare.com
+CORS_ORIGINS=http://localhost:3000,http://localhost:5173,https://tyler-schwenk.com,https://www.tyler-schwenk.com
 ```
 
 Restart:
@@ -144,19 +139,19 @@ docker compose restart
 
 ## Verification
 
-**Check tunnel status and get URL:**
+**Check tunnel status:**
 ```bash
 cd ~/house-of-good-things/services/cloudflared
 docker compose logs
 ```
 
-Look for: "Your quick Tunnel has been created! Visit it at: https://..."
+Look for: "Registered tunnel connection"
 
 **Test public access:**
 
-From any device (not on local network):
+From any device:
 ```bash
-curl https://your-tunnel-url.trycloudflare.com/health
+curl https://api.tyler-schwenk.com/health
 ```
 
 Should return:
@@ -169,22 +164,19 @@ Should return:
 ```
 
 **Test in browser:**
-- Health: https://your-tunnel-url.trycloudflare.com/health
-- Galleries: https://your-tunnel-url.trycloudflare.com/galleries
-- API docs: https://your-tunnel-url.trycloudflare.com/docs
+- Health: https://api.tyler-schwenk.com/health
+- Galleries: https://api.tyler-schwenk.com/galleries
+- API docs: https://api.tyler-schwenk.com/docs
 
 ## Security Considerations
 
-**Quick Tunnel Mode:**
-- Tunnel URL is obscure and hard to guess
-- No authentication by default on public endpoints
-- Gallery endpoints (GET) are safe to expose publicly
-- Write operations (POST/PUT/DELETE) require JWT auth in API
-
-**For production with named tunnel:**
-- Use Cloudflare Zero Trust access policies
-- Add rate limiting via Cloudflare WAF
-- Restrict by country/IP if needed
+**Current Setup (Named Tunnel):**
+- Custom domain with SSL/TLS
+- No authentication required on public GET endpoints (galleries, health)
+- Write operations (POST/PUT/DELETE) require JWT authentication in API
+- Can add Cloudflare Zero Trust access policies if needed
+- Can add rate limiting via Cloudflare WAF
+- Can restrict by country/IP if needed
 
 ## Troubleshooting
 
@@ -223,15 +215,9 @@ docker compose restart
 **CORS errors:**
 
 If frontend gets blocked:
-1. Add tunnel URL to CORS_ORIGINS in website-backend/.env
-2. Ensure protocol matches (https for tunnel)
+1. Add domain to CORS_ORIGINS in website-backend/.env (tyler-schwenk.com, www.tyler-schwenk.com)
+2. Ensure protocol matches (https)
 3. Restart API container
-
-**URL changed after restart:**
-
-Quick tunnel URLs are temporary. Either:
-- Accept new URL and update frontend
-- Switch to named tunnel with custom domain (Option 2)
 
 ## Monitoring
 

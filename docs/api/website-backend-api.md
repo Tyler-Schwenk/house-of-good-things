@@ -3,7 +3,7 @@
 **Version:** 1.0.0  
 **Base URL:** `https://fart-pi.your-tailnet.ts.net:8000`
 
-Backend API for tyler-schwenk.github.io providing:
+Backend API for tyler-schwenk.com providing:
 - **Public Square Forum**: User authentication, posts, comments, and discussions
 - **Photo Galleries**: Album management with automatic thumbnails and image serving
 
@@ -950,5 +950,3 @@ For issues or questions, check:
 - Interactive docs: `/docs`
 - Health status: `/health`
 - API root: `/`
-
-Note: Some endpoints are marked as TODO in the implementation and may return 404 until fully implemented.

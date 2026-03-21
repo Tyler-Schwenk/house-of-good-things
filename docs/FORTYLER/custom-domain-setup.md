@@ -1,6 +1,14 @@
 # Custom Domain Setup Guide
 
-Complete guide to setting up tyler-schwenk.com with Cloudflare DNS and migrating from quick tunnel to named tunnel.
+**Status:** Completed ✓
+
+This guide documents the setup of tyler-schwenk.com with Cloudflare DNS and named tunnel.
+
+**Current Configuration:**
+- Frontend: https://tyler-schwenk.com (GitHub Pages)
+- API: https://api.tyler-schwenk.com (Pi via Cloudflare Tunnel)
+
+Use this as a reference for future domain setups or troubleshooting.
 
 ## Overview
 
@@ -264,9 +272,9 @@ With a stable domain, you can now set up OAuth authentication.
    GITHUB_CLIENT_SECRET=your_client_secret_here
    ```
 
-### Update FastAPI Code
+### Implement OAuth Routers
 
-This will be done in a separate task - implementing the OAuth routers using fastapi-users library.
+Use the fastapi-users library to implement OAuth authentication endpoints. See the fastapi-users documentation for Google and GitHub OAuth provider setup.
 
 ## Verification Checklist
 
@@ -299,7 +307,7 @@ This will be done in a separate task - implementing the OAuth routers using fast
 - Test from Pi: `curl http://localhost:8000/health` should work
 
 ### CORS errors
-- Verify CORS_ORIGINS includes tyrannical-schwenk.com
+- Verify CORS_ORIGINS includes tyler-schwenk.com
 - Restart website-backend after changing .env
 - Check browser console for specific CORS error
 

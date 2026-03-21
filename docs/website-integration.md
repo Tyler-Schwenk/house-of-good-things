@@ -4,11 +4,10 @@ How tyler-schwenk.github.io integrates with the Website Backend API on fart-pi.
 
 ## Current Status
 
+**Domain:** tyler-schwenk.com (custom domain configured)
+**API:** https://api.tyler-schwenk.com
 **API Migration:** Completed (255 photos across 16 galleries)
-**API Access:** https://trinity-minus-correctly-lap.trycloudflare.com (quick tunnel, temporary URL)
 **Frontend Integration:** Pending (frontend still using static files)
-
-**Next:** Update frontend to fetch from API instead of static gallery files.
 
 ## Architecture Overview
 
@@ -18,7 +17,7 @@ How tyler-schwenk.github.io integrates with the Website Backend API on fart-pi.
 - Repository: tyler-schwenk.github.io (separate repo)
 - Hosting: GitHub Pages CDN
 - Framework: Next.js (static export)
-- URL: https://tyler-schwenk.github.io
+- Domain: https://tyler-schwenk.com
 
 **Dynamic Backend (Raspberry Pi):**
 - Repository: house-of-good-things/services/website-backend/
@@ -80,12 +79,12 @@ fart-pi:/media/tyler/FE645A9A645A558D/public-gallery/
 **Frontend code:**
 ```typescript
 // Fetches at runtime from API
-const response = await fetch('https://api.yoursite.com/galleries/slug/jordan');
+const response = await fetch('https://api.tyler-schwenk.com/galleries/slug/jordan');
 const gallery = await response.json();
 
 // Render images
 gallery.photos.map(photo => (
-  <img src={`https://api.yoursite.com/galleries/photos/${photo.id}/file`} />
+  <img src={`https://api.tyler-schwenk.com/galleries/photos/${photo.id}/file`} />
 ))
 ```
 
@@ -185,7 +184,7 @@ nano .env
 ```
 
 ```env
-CORS_ORIGINS=http://localhost:3000,http://localhost:5173,https://tyler-schwenk.github.io
+CORS_ORIGINS=http://localhost:3000,http://localhost:5173,https://tyler-schwenk.com,https://www.tyler-schwenk.com
 ```
 
 Restart API:

@@ -4,7 +4,7 @@ A secure network of self hosted servers, connected via NetBird
 
 ## Main nodes withing Bird Wide Web
 
-Tyler - 'House of Good things' ip, runs on 'fart-pi' (raspberry pi 5). main programs include: Website Backend API providing forum (Public Square) and photo galleries for his personal website (https://tyler-schwenk.github.io/). also running beszel and netbird
+Tyler - 'House of Good things' ip, runs on 'fart-pi' (raspberry pi 5). Main programs include: Website Backend API providing forum (Public Square) and photo galleries for his personal website (https://tyler-schwenk.com/). API accessible at https://api.tyler-schwenk.com. Also running Beszel and NetBird.
 
 John - 'JohnHOME' ip, runs JohnNAS and JohnSERV (please fill in these details, john). main programs include: hosting the NetBird Overlay Network, minecraft server, Jellyfin movie streamer.
 

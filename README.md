@@ -21,8 +21,8 @@ Configuration repository for **fart-pi** - Raspberry Pi 5 home server.
 2. **Website Backend** - FastAPI + SQLite backend (forum + gallery)
    - Status: Running and operational
    - Private Access: http://100.124.76.27:8000 (via NetBird) or http://localhost:8000 (on Pi)
-   - Public Access: https://trinity-minus-correctly-lap.trycloudflare.com (quick tunnel, temporary URL)
-   - API Docs: http://100.124.76.27:8000/docs
+   - Public Access: https://api.tyler-schwenk.com
+   - API Docs: https://api.tyler-schwenk.com/docs
    - Features:
      - Photo galleries: 16 albums, 255 photos migrated (operational)
      - Public Square forum: Posts, comments (routers pending implementation)
@@ -34,8 +34,9 @@ Configuration repository for **fart-pi** - Raspberry Pi 5 home server.
    - Monitoring: CPU, RAM, disk, temperature, network, containers
 
 4. **Cloudflare Tunnel** - Public API access
-   - Status: Running in quick tunnel mode
-   - URL: https://trinity-minus-correctly-lap.trycloudflare.com (temporary)
+   - Status: Running with named tunnel
+   - Domain: api.tyler-schwenk.com
+   - Tunnel: fart-pi-tunnel
    - Target: website-backend-api:8000
 
 **Phase 2+ - Future:**

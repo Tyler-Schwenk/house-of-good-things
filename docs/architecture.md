@@ -23,12 +23,12 @@ System architecture for fart-pi multi-service home server.
    - Management: Self-hosted by John at https://johnserv.garrepi.dev
    - Connected Peers: JohnSERV (100.124.56.240), JohnNAS, Bebop
 
-2. **Website Backend** - FastAPI backend for tyler-schwenk.github.io
+2. **Website Backend** - FastAPI backend for tyler-schwenk.com
    - Status: Running and operational
    - Access: http://fart-pi.johnserv.garrepi.dev:8000 or http://100.124.76.27:8000
-   - Public Access: https://trinity-minus-correctly-lap.trycloudflare.com (quick tunnel, temporary URL)
-   - API Documentation: http://100.124.76.27:8000/docs
-   - Health Check: http://100.124.76.27:8000/health
+   - Public Access: https://api.tyler-schwenk.com
+   - API Documentation: http://100.124.76.27:8000/docs or https://api.tyler-schwenk.com/docs
+   - Health Check: http://100.124.76.27:8000/health or https://api.tyler-schwenk.com/health
    - Database: SQLite at /app/data/website_backend.db (16 galleries, 255 photos)
    - Features:
      - **Photo Galleries**: 16 albums with automatic thumbnail generation (255 photos migrated)
@@ -44,10 +44,10 @@ System architecture for fart-pi multi-service home server.
    - Resource usage: <1% CPU, ~50MB RAM
 
 4. **Cloudflare Tunnel** - Public API access
-   - Status: Running in quick tunnel mode
-   - URL: https://trinity-minus-correctly-lap.trycloudflare.com (temporary)
+   - Status: Running with named tunnel
+   - Domain: api.tyler-schwenk.com
+   - Tunnel Name: fart-pi-tunnel
    - Target: website-backend-api:8000
-   - Note: URL changes on container restart
 
 **Later additions (Phase 2+):**
 - Immich (photo management)
@@ -65,16 +65,16 @@ System architecture for fart-pi multi-service home server.
 ### Phase 1: Core Infrastructure (DEPLOYED)
 
 **Website Backend API**
-- Unified backend for tyler-schwenk.github.io
+- Unified backend for tyler-schwenk.com
 - FastAPI (Python) with single SQLite database
-- User auth: JWT (email/password)
+- User auth: JWT (OAuth planned)
 - **Features:**
   - **Photo Galleries**: 16 albums, 255 photos with automatic thumbnails (operational)
   - **Public Square Forum**: Posts, comments, threads (routers pending implementation)
-- Frontend: GitHub Pages (hosted separately at tyler-schwenk.github.io)
+- Frontend: GitHub Pages (hosted separately at tyler-schwenk.com)
 - Access:
   - Private: http://100.124.76.27:8000 (via NetBird) or http://localhost:8000 (on Pi)
-  - Public: https://trinity-minus-correctly-lap.trycloudflare.com (quick tunnel, temporary URL)
+  - Public: https://api.tyler-schwenk.com
 - Port: 8000
 - Database: website_backend.db with tables for users, posts, comments, galleries, gallery_photos
 - Photo Storage: /media/tyler/FE645A9A645A558D/public-gallery
@@ -96,8 +96,9 @@ System architecture for fart-pi multi-service home server.
 
 **Cloudflare Tunnel**
 - Public API access without port forwarding
-- Mode: Quick tunnel (temporary URL)
-- URL: https://trinity-minus-correctly-lap.trycloudflare.com
+- Mode: Named tunnel with custom domain
+- Domain: api.tyler-schwenk.com
+- Tunnel: fart-pi-tunnel
 - Target: website-backend-api:8000
 - Status: Running and operational
 
@@ -269,9 +270,9 @@ Your Device (anywhere) → NetBird VPN → fart-pi:8000 → Website Backend API
 ```
 Visitor's Browser → Cloudflare Edge → Tunnel → Pi → Website Backend API
 ```
-- For public website visitors (GitHub Pages integration)
+- For public website visitors (tyler-schwenk.com integration)
 - No VPN required
-- Current URL: https://trinity-minus-correctly-lap.trycloudflare.com (temporary)
+- Domain: https://api.tyler-schwenk.com
 
 **NetBird Benefits:**
 - No open ports on home router

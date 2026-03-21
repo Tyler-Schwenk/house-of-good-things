@@ -56,8 +56,8 @@ ssh tyler@192.168.1.116      # Via Ethernet
 
 **Web Services**:
 - Website Backend API: http://100.124.76.27:8000 (via NetBird) or http://localhost:8000 (on Pi)
+- Public API: https://api.tyler-schwenk.com
 - Beszel: http://100.124.76.27:8090 (via NetBird)
-- Public API: https://trinity-minus-correctly-lap.trycloudflare.com (temporary)
 
 ### Common Commands
 

@@ -12,7 +12,7 @@ The Website Backend API is a unified RESTful API providing:
 - **Rate limiting**: Protection against abuse
 - **JWT Authentication**: Secure token-based auth
 
-This service powers the backend for tyler-schwenk.github.io.
+This service powers the backend for tyler-schwenk.com.
 
 ## Architecture
 
